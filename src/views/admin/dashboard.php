@@ -6,21 +6,9 @@
     <title>Youdemy Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-        }
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f8fafc;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 5px;
+            font-family: 'Arial', sans-serif;
         }
         .stats-grid {
             display: grid;
@@ -240,8 +228,7 @@
                 </div>
 
                 <!-- Teacher Validations Section -->
-              <!-- Teacher Validations Section -->
-              <div class="bg-white rounded-xl border border-gray-200 mb-8">
+                <div class="bg-white rounded-xl border border-gray-200 mb-8">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-6">
                             <h2 class="text-lg font-bold text-gray-900">Pending Teacher Validations</h2>
