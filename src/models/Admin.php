@@ -35,33 +35,6 @@ class Admin extends User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAllCategories()
-    {
-        global $pdo;
-        $stmt = $pdo->query("SELECT * FROM categories");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
-    public function addCategory($categoryName)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO categories (nom) VALUES (:categoryName)");
-        $stmt->bindParam(':categoryName', $categoryName);
-        $stmt->execute();
-    }
 
-    public function getAllTags()
-    {
-        global $pdo;
-        $stmt = $pdo->query("SELECT * FROM tags");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function addTag($tagName)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO tags (nom) VALUES (:tagName)");
-        $stmt->bindParam(':tagName', $tagName);
-        $stmt->execute();
-    }
 }
