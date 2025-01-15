@@ -1,7 +1,7 @@
 <?php
 require_once 'connection.php';
 
-class Category
+class Tag
 {
     private $id;
     private $nom;
@@ -14,38 +14,38 @@ class Category
     public function create()
     {
         global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO categories (nom) VALUES (:nom)");
+        $stmt = $pdo->prepare("INSERT INTO tags (nom) VALUES (:nom)");
         $stmt->bindParam(':nom', $this->nom);
         $stmt->execute();
         $this->id = $pdo->lastInsertId();
     }
 
-    public static function getCategoryByName($categoryName)
+    public static function getTagByName($tagName)
     {
         global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM categories WHERE nom = :nom");
-        $stmt->bindParam(':nom', $categoryName);
+        $stmt = $pdo->prepare("SELECT * FROM tags WHERE nom = :nom");
+        $stmt->bindParam(':nom', $tagName);
         $stmt->execute();
-        $category = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($category) {
-            $categoryObject = new Category($category['nom']);
-            $categoryObject->id = $category['id_categorie'];
-            return $categoryObject;
+        $tag = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($tag) {
+            $tagObject = new Tag($tag['nom']);
+            $tagObject->id = $tag['id_tag'];
+            return $tagObject;
         }
         return null;
     }
 
-    public static function getAllCategories()
+    public static function getAllTags()
     {
         global $pdo;
-        $stmt = $pdo->query("SELECT * FROM categories");
+        $stmt = $pdo->query("SELECT * FROM tags");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function update($newName)
     {
         global $pdo;
-        $stmt = $pdo->prepare("UPDATE categories SET nom = :newName WHERE id_categorie = :id");
+        $stmt = $pdo->prepare("UPDATE tags SET nom = :newName WHERE id_tag = :id");
         $stmt->bindParam(':newName', $newName);
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
@@ -55,7 +55,7 @@ class Category
     public function delete()
     {
         global $pdo;
-        $stmt = $pdo->prepare("DELETE FROM categories WHERE id_categorie = :id");
+        $stmt = $pdo->prepare("DELETE FROM tags WHERE id_tag = :id");
         $stmt->bindParam(':id', $this->id);
         $stmt->execute();
     }
