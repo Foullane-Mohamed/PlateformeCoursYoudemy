@@ -38,7 +38,7 @@
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
                     <div class="mt-4 space-y-1">
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                        <a href="dashboard.php" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-chart-line w-5 h-5"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>

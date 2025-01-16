@@ -37,7 +37,7 @@
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
                     <div class="mt-4 space-y-1">
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                        <a href="dashboard.php" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-chart-line w-5 h-5"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
@@ -67,13 +67,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Category Filter -->
-                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option>All Categories</option>
-                                <option>Programming</option>
-                                <option>Design</option>
-                                <option>Business</option>
-                            </select>
+                        
                         </div>
 
                         <!-- Add New Tag Button -->
@@ -90,7 +84,7 @@
                 <!-- Page Header -->
                 <div class="mb-8">
                     <h1 class="text-2xl font-bold text-gray-900">Tags Management</h1>
-                    <p class="mt-2 text-sm text-gray-600">Manage and organize your course tags and categories</p>
+                  
                 </div>
 
                 <!-- Stats Overview -->
@@ -135,27 +129,7 @@
                     </div>
                 </div>
 
-                <!-- Tag Categories -->
-                <div class="mb-8">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Popular Categories</h2>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-4 py-2 rounded-full bg-indigo-50 text-indigo-600 font-medium text-sm">
-                            Programming (45)
-                        </span>
-                        <span class="px-4 py-2 rounded-full bg-purple-50 text-purple-600 font-medium text-sm">
-                            Design (32)
-                        </span>
-                        <span class="px-4 py-2 rounded-full bg-blue-50 text-blue-600 font-medium text-sm">
-                            Business (28)
-                        </span>
-                        <span class="px-4 py-2 rounded-full bg-green-50 text-green-600 font-medium text-sm">
-                            Marketing (25)
-                        </span>
-                        <span class="px-4 py-2 rounded-full bg-pink-50 text-pink-600 font-medium text-sm">
-                            Photography (18)
-                        </span>
-                    </div>
-                </div>
+          
 
                 <!-- Tags Grid -->
                 <div class="tag-grid">
@@ -286,24 +260,8 @@
                                placeholder="Enter tag name">
                     </div>
 
-                    <!-- Category Selection -->
-                    <div class="mb-4">
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
-                            Category <span class="text-red-500">*</span>
-                        </label>
-                        <select id="category" 
-                                name="category" 
-                                required
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="">Select a category</option>
-                            <option value="programming">Programming</option>
-                            <option value="design">Design</option>
-                            <option value="business">Business</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="photography">Photography</option>
-                            <option value="music">Music</option>
-                        </select>
-                    </div>
+                
+                
 
                     <!-- Description -->
                     <div class="mb-4">
@@ -383,82 +341,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Modal functionality
-        function openModal() {
-            document.getElementById('addTagModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('addTagModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Color selection functionality
-        const colorInputs = document.querySelectorAll('input[name="tagColor"]');
-        colorInputs.forEach(input => {
-            input.addEventListener('change', (e) => {
-                // Remove all rings
-                document.querySelectorAll('input[name="tagColor"] + div').forEach(div => {
-                    div.classList.remove('ring-indigo-500', 'ring-purple-500', 'ring-blue-500', 'ring-green-500', 'ring-red-500');
-                    div.classList.add('ring-transparent');
-                });
-                
-                // Add ring to selected color
-                const selectedDiv = e.target.nextElementSibling;
-                selectedDiv.classList.remove('ring-transparent');
-                selectedDiv.classList.add(`ring-${e.target.value}-500`);
-            });
-        });
-
-        // Form submission
-        function handleSubmit(event) {
-            event.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
-            
-            // Here you would typically send the data to your backend
-            console.log('Form submitted with data:', data);
-            
-            // Show success message
-            showNotification('Tag created successfully!');
-            
-            // Close modal
-            closeModal();
-        }
-
-        // Notification functionality
-        function showNotification(message) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 translate-y-20 opacity-0';
-            notification.textContent = message;
-            
-            // Add to document
-            document.body.appendChild(notification);
-            
-            // Trigger animation
-            setTimeout(() => {
-                notification.classList.remove('translate-y-20', 'opacity-0');
-            }, 100);
-            
-            // Remove after delay
-            setTimeout(() => {
-                notification.classList.add('translate-y-20', 'opacity-0');
-                setTimeout(() => {
-                    notification.remove();
-                }, 500);
-            }, 3000);
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('addTagModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('addTagModal')) {
-                closeModal();
-            }
-        });
-    </script>
+    </body>
+    </html>
