@@ -16,6 +16,7 @@ $messageType = '';
 
 // Handle category form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+  $admin = new Admin($_SESSION['user']['nom'], $_SESSION['user']['email'], '', 'admin', 'actif');
   switch ($_POST['action']) {
     case 'create':
       if (isset($_POST['nom']) && !empty($_POST['nom'])) {

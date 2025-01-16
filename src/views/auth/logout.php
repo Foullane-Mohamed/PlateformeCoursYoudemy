@@ -1,5 +1,4 @@
 <?php
-// Use correct path to Auth.php
 require_once __DIR__ . '/../../models/Auth.php';
 
 // Start session if not already started

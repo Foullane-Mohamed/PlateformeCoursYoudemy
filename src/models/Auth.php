@@ -1,13 +1,12 @@
 <?php
-// Use correct paths relative to the models directory
 require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/User.php';
 
 class Auth
 {
-    public static function register($nom, $email, $password, $role)
+    public function register($nom, $email, $password, $role)
     {
-        $user = self::getUserByEmail($email);
+        $user = $this->getUserByEmail($email);
         if ($user) {
             return ['error' => 'Cet email est déjà utilisé.'];
         }
@@ -18,9 +17,10 @@ class Auth
         return ['success' => 'Votre compte a été créé avec succès. Veuillez patienter pendant que votre compte est validé.'];
     }
 
-    public static function login($email, $password)
+    public function login($email, $password)
     {
-        $user = User::login($email, sha1($password));
+        $userModel = new User(null, null, null, null, null);
+        $user = $userModel->login($email, sha1($password));
         if ($user && $user['status'] == 'actif') {
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
@@ -34,7 +34,7 @@ class Auth
         }
     }
 
-    public static function logout()
+    public function logout()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -43,7 +43,7 @@ class Auth
         return ['success' => 'Vous avez été déconnecté avec succès.'];
     }
 
-    private static function getUserByEmail($email)
+    private function getUserByEmail($email)
     {
         // Implement this method if not already implemented in User class
         return User::findByEmail($email);

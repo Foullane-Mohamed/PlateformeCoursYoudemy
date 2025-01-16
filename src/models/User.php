@@ -23,7 +23,7 @@ class User
     {
         $db = Database::getInstance();
         $conn = $db->getConnection();
-        
+
         $stmt = $conn->prepare("INSERT INTO utilisateurs (nom, email, password, role, status) VALUES (:nom, :email, :password, :role, :status)");
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':email', $this->email);
@@ -33,14 +33,25 @@ class User
         $stmt->execute();
     }
 
-    public static function login($email, $password)
+    public function login($email, $password)
     {
         $db = Database::getInstance();
         $conn = $db->getConnection();
-        
+
         $stmt = $conn->prepare("SELECT * FROM utilisateurs WHERE email = :email AND password = :password");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function findByEmail($email)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("SELECT * FROM utilisateurs WHERE email = :email");
+        $stmt->bindParam(':email', $email);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

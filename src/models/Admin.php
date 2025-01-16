@@ -4,7 +4,7 @@ require_once 'User.php';
 
 class Admin extends User
 {
-    public function __construct($nom, $email, $password, $role, $status) 
+    public function __construct($nom, $email, $password, $role, $status)
     {
         parent::__construct($nom, $email, $password, $role, $status);
     }
@@ -49,7 +49,7 @@ class Admin extends User
             $checkStmt = $conn->prepare("SELECT id, status FROM utilisateurs WHERE id = :userId");
             $checkStmt->bindParam(':userId', $userId);
             $checkStmt->execute();
-            
+
             if (!$checkStmt->fetch()) {
                 return ['success' => false, 'message' => 'Utilisateur non trouvé'];
             }
@@ -75,10 +75,10 @@ class Admin extends User
 
             // Optional: Notify enrolled students
             $stmt = $conn->prepare("
-                SELECT DISTINCT u.email 
-                FROM utilisateurs u 
-                JOIN inscriptions i ON u.id = i.id_etudiant 
-                JOIN cours c ON i.id_cours = c.id 
+                SELECT DISTINCT u.email
+                FROM utilisateurs u
+                JOIN inscriptions i ON u.id = i.id_etudiant
+                JOIN cours c ON i.id_cours = c.id
                 WHERE c.id_enseignant = :teacherId
             ");
             $stmt->bindParam(':teacherId', $teacherId);
@@ -87,8 +87,8 @@ class Admin extends User
 
             // Optional: Update course status or take other actions
             $stmt = $conn->prepare("
-                UPDATE cours 
-                SET status = 'suspendu' 
+                UPDATE cours
+                SET status = 'suspendu'
                 WHERE id_enseignant = :teacherId
             ");
             $stmt->bindParam(':teacherId', $teacherId);
@@ -155,12 +155,12 @@ class Admin extends User
         try {
             $db = Database::getInstance();
             $conn = $db->getConnection();
-            
+
             // Exclude inactive teachers from the general listing
             $stmt = $conn->prepare("
-                SELECT * FROM utilisateurs 
+                SELECT * FROM utilisateurs
                 WHERE NOT (role = 'enseignant' AND status = 'inactif')
-                ORDER BY FIELD(role, 'admin', 'enseignant', 'etudiant'), 
+                ORDER BY FIELD(role, 'admin', 'enseignant', 'etudiant'),
                          FIELD(status, 'actif', 'en_attente', 'inactif'),
                          nom
             ");
@@ -170,6 +170,4 @@ class Admin extends User
             return ['error' => 'Erreur lors de la récupération des utilisateurs: ' . $e->getMessage()];
         }
     }
-
-  
 }

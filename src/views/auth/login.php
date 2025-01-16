@@ -11,13 +11,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($email) && !empty($password)) {
         // Hash the password before checking
         $hashedPassword = hash('sha256', $password);
-        
+
         try {
-            $user = User::login($email, $hashedPassword);
-            
+            $userModel = new User(null, null, null, null, null);
+            $user = $userModel->login($email, $hashedPassword);
+
             if ($user) {
                 $_SESSION['user'] = $user;
-                
+
                 // Redirect based on role
                 switch($user['role']) {
                     case 'admin':
@@ -174,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleIcon = document.getElementById('toggleIcon');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 toggleIcon.classList.remove('fa-eye');
