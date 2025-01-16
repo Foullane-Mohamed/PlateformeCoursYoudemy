@@ -1,37 +1,43 @@
 <?php
+
 class Database {
+    private static $instance = null;
+    private $connection;
 
     private $host = "localhost";
-    private $db_name = "youdemy";
     private $username = "root";
     private $password = "";
-    private $conn;
+    private $database = "youdemy";
 
-
-    public function getConnection() {
-        $this->conn = null;
-
+    private function __construct() {
         try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
+            $this->connection = new PDO(
+                "mysql:host=$this->host;dbname=$this->database;charset=utf8",
                 $this->username,
-                $this->password
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                ]
             );
-            
-
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->conn->exec("set names utf8");
-
-        } catch(PDOException $exception) {
-            echo "eroor connection " . $exception->getMessage();
+        } catch(PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
         }
-
-        return $this->conn;
     }
 
+    private function __clone() {}
 
-    public function closeConnection() {
-        $this->conn = null;
+    public function __wakeup() {}
+
+    public static function getInstance() {
+        if(self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    public function getConnection() {
+        return $this->connection;
     }
 }

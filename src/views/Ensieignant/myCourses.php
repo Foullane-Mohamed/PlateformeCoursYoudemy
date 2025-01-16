@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youdemy Add Course</title>
+    <title>Youdemy My Courses</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,11 +30,11 @@
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
                     <div class="mt-4 space-y-1">
-                        <a href="dashboard.php" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-chart-line w-5 h-5"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600">
                             <i class="fas fa-book w-5 h-5"></i>
                             <span class="ml-3">My Courses</span>
                         </a>
@@ -48,18 +48,12 @@
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Content</h3>
                     <div class="mt-4 space-y-1">
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-plus-circle w-5 h-5"></i>
                             <span class="ml-3">Create Course</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-comments w-5 h-5"></i>
-                            <span class="ml-3">Reviews</span>
-                        </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-certificate w-5 h-5"></i>
-                            <span class="ml-3">Certificates</span>
-                        </a>
+                    
+                      
                     </div>
                 </div>
 
@@ -70,10 +64,7 @@
                             <i class="fas fa-cog w-5 h-5"></i>
                             <span class="ml-3">Profile</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-bell w-5 h-5"></i>
-                            <span class="ml-3">Notifications</span>
-                        </a>
+                      
                     </div>
                 </div>
             </nav>
@@ -111,10 +102,7 @@
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <button class="relative p-2 text-gray-400 hover:text-gray-500">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
-                            </button>
+                          
                             <button class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
                                 <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Teacher" class="w-8 h-8 rounded-lg">
                                 <span class="hidden sm:block font-medium text-sm text-gray-700">John Doe</span>
@@ -128,53 +116,60 @@
             <main class="flex-1 p-6">
                 <!-- Welcome Section -->
                 <div class="mb-8">
-                    <h1 class="text-2xl font-bold text-gray-900">Add New Course</h1>
-                    <p class="mt-2 text-sm text-gray-600">Fill in the details to create a new course.</p>
+                    <h1 class="text-2xl font-bold text-gray-900">My Courses</h1>
+                    <p class="mt-2 text-sm text-gray-600">Manage your courses and view details.</p>
                 </div>
 
-                <!-- Add Course Form -->
-                <form action="add_course.php" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-xl border border-gray-200">
-                    <div class="mb-4">
-                        <label for="titre" class="block text-sm font-medium text-gray-700">Course Title</label>
-                        <input type="text" id="titre" name="titre" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                <!-- Courses List -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Course Card -->
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition-all">
+                        <img src="https://via.placeholder.com/300x200" alt="Course Image" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold text-gray-900">React Fundamentals</h3>
+                            <p class="text-gray-600 mt-2">Learn the basics of React and build your first application.</p>
+                            <div class="flex items-center mt-4">
+                                <span class="text-sm text-gray-500">Tags:</span>
+                                <div class="flex space-x-2 ml-2">
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">React</span>
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">JavaScript</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <a href="edit_course.html?id=1" class="text-indigo-600 hover:text-indigo-500">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button class="text-red-600 hover:text-red-500" onclick="deleteCourse(1)">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="description" name="description" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" rows="4" required></textarea>
+                    <!-- Course Card -->
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition-all">
+                        <img src="https://via.placeholder.com/300x200" alt="Course Image" class="w-full h-48 object-cover rounded-t-xl">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold text-gray-900">Node.js Mastery</h3>
+                            <p class="text-gray-600 mt-2">Master Node.js and build scalable server-side applications.</p>
+                            <div class="flex items-center mt-4">
+                                <span class="text-sm text-gray-500">Tags:</span>
+                                <div class="flex space-x-2 ml-2">
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">Node.js</span>
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">Backend</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <a href="edit_course.html?id=2" class="text-indigo-600 hover:text-indigo-500">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button class="text-red-600 hover:text-red-500" onclick="deleteCourse(2)">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="mb-4">
-                        <label for="contenu" class="block text-sm font-medium text-gray-700">Content</label>
-                        <textarea id="contenu" name="contenu" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" rows="6" required></textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="type_contenu" class="block text-sm font-medium text-gray-700">Content Type</label>
-                        <select id="type_contenu" name="type_contenu" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
-                            <option value="video">Video</option>
-                            <option value="document">Document</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="id_categorie" class="block text-sm font-medium text-gray-700">Category</label>
-                        <select id="id_categorie" name="id_categorie" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
-                            <!-- Options will be populated from the database -->
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
-                        <select id="tags" name="tags[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" multiple required>
-                            <!-- Options will be populated from the database -->
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700">Create Course</button>
-                    </div>
-                </form>
+                </div>
             </main>
         </div>
     </div>
@@ -194,6 +189,13 @@
                 sidebar.classList.add('hidden');
             }
         });
+
+        // Function to delete a course
+        function deleteCourse(courseId) {
+            if (confirm('Are you sure you want to delete this course?')) {
+                window.location.href = 'delete_course.php?id=' + courseId;
+            }
+        }
     </script>
 </body>
 </html>

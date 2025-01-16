@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youdemy Add Course</title>
+    <title>Youdemy Statistics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
@@ -30,7 +31,7 @@
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
                     <div class="mt-4 space-y-1">
-                        <a href="dashboard.php" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-chart-line w-5 h-5"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
@@ -48,7 +49,7 @@
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Content</h3>
                     <div class="mt-4 space-y-1">
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-plus-circle w-5 h-5"></i>
                             <span class="ml-3">Create Course</span>
                         </a>
@@ -128,53 +129,24 @@
             <main class="flex-1 p-6">
                 <!-- Welcome Section -->
                 <div class="mb-8">
-                    <h1 class="text-2xl font-bold text-gray-900">Add New Course</h1>
-                    <p class="mt-2 text-sm text-gray-600">Fill in the details to create a new course.</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Statistics</h1>
+                    <p class="mt-2 text-sm text-gray-600">View detailed statistics about your courses.</p>
                 </div>
 
-                <!-- Add Course Form -->
-                <form action="add_course.php" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-xl border border-gray-200">
-                    <div class="mb-4">
-                        <label for="titre" class="block text-sm font-medium text-gray-700">Course Title</label>
-                        <input type="text" id="titre" name="titre" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
+                <!-- Diagrams -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Bar Chart for Number of Students Enrolled -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">Number of Students Enrolled</h2>
+                        <canvas id="studentEnrollmentChart" width="400" height="200"></canvas>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="description" name="description" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" rows="4" required></textarea>
+                    <!-- Doughnut Chart for Number of Courses -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">Number of Courses</h2>
+                        <canvas id="courseCountChart" width="400" height="200"></canvas>
                     </div>
-
-                    <div class="mb-4">
-                        <label for="contenu" class="block text-sm font-medium text-gray-700">Content</label>
-                        <textarea id="contenu" name="contenu" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" rows="6" required></textarea>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="type_contenu" class="block text-sm font-medium text-gray-700">Content Type</label>
-                        <select id="type_contenu" name="type_contenu" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
-                            <option value="video">Video</option>
-                            <option value="document">Document</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="id_categorie" class="block text-sm font-medium text-gray-700">Category</label>
-                        <select id="id_categorie" name="id_categorie" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
-                            <!-- Options will be populated from the database -->
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
-                        <select id="tags" name="tags[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" multiple required>
-                            <!-- Options will be populated from the database -->
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700">Create Course</button>
-                    </div>
-                </form>
+                </div>
             </main>
         </div>
     </div>
@@ -192,6 +164,68 @@
         document.addEventListener('click', (e) => {
             if (!sidebar.contains(e.target) && !menuButton.contains(e.target)) {
                 sidebar.classList.add('hidden');
+            }
+        });
+
+        // Chart.js configurations
+        const studentEnrollmentData = {
+            labels: ['Course 1', 'Course 2', 'Course 3', 'Course 4', 'Course 5'],
+            datasets: [{
+                label: 'Number of Students',
+                data: [120, 190, 30, 50, 20],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const courseCountData = {
+            labels: ['Active Courses', 'Draft Courses'],
+            datasets: [{
+                label: 'Number of Courses',
+                data: [10, 2],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const studentEnrollmentChart = new Chart(document.getElementById('studentEnrollmentChart'), {
+            type: 'bar',
+            data: studentEnrollmentData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const courseCountChart = new Chart(document.getElementById('courseCountChart'), {
+            type: 'doughnut',
+            data: courseCountData,
+            options: {
+                responsive: true
             }
         });
     </script>
