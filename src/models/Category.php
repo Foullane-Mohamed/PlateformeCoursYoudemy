@@ -1,62 +1,121 @@
 <?php
-require_once 'connection.php';
+require_once __DIR__ . '/../config/connection.php';
 
-class Category
-{
+class Category {
     private $id;
     private $nom;
 
-    public function __construct($nom)
-    {
+    public function __construct($nom) {
         $this->nom = $nom;
     }
 
-    public function create()
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO categories (nom) VALUES (:nom)");
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->execute();
-        $this->id = $pdo->lastInsertId();
-    }
-
-    public static function getCategoryByName($categoryName)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM categories WHERE nom = :nom");
-        $stmt->bindParam(':nom', $categoryName);
-        $stmt->execute();
-        $category = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($category) {
-            $categoryObject = new Category($category['nom']);
-            $categoryObject->id = $category['id_categorie'];
-            return $categoryObject;
+    // Add this method
+    public static function getCategoryById($id) {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        try {
+            $stmt = $conn->prepare("SELECT id_categorie, nom FROM categories WHERE id_categorie = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return null;
         }
-        return null;
     }
 
-    public static function getAllCategories()
-    {
-        global $pdo;
-        $stmt = $pdo->query("SELECT * FROM categories");
+    public static function getAllCategoriesWithStats() {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        $query = "
+            SELECT 
+                c.id_categorie,
+                c.nom,
+                COUNT(DISTINCT co.id) as cours_count,
+                COUNT(DISTINCT i.id_etudiant) as students_count
+            FROM categories c
+            LEFT JOIN cours co ON c.id_categorie = co.id_categorie
+            LEFT JOIN inscriptions i ON co.id = i.id_cours
+            GROUP BY c.id_categorie, c.nom
+            ORDER BY c.nom ASC
+        ";
+        
+        $stmt = $conn->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function update($newName)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("UPDATE categories SET nom = :newName WHERE id_categorie = :id");
-        $stmt->bindParam(':newName', $newName);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->execute();
-        $this->nom = $newName;
+    public function create() {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        try {
+            $stmt = $conn->prepare("INSERT INTO categories (nom) VALUES (:nom)");
+            $stmt->bindParam(':nom', $this->nom);
+            $stmt->execute();
+            return [
+                'success' => true,
+                'id' => $conn->lastInsertId(),
+                'message' => 'Catégorie créée avec succès'
+            ];
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                return [
+                    'success' => false,
+                    'message' => 'Une catégorie avec ce nom existe déjà'
+                ];
+            }
+            return [
+                'success' => false,
+                'message' => 'Erreur lors de la création de la catégorie'
+            ];
+        }
     }
 
-    public function delete()
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("DELETE FROM categories WHERE id_categorie = :id");
-        $stmt->bindParam(':id', $this->id);
-        $stmt->execute();
+    public static function update($id, $newName) {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        try {
+            $stmt = $conn->prepare("UPDATE categories SET nom = :newName WHERE id_categorie = :id");
+            $stmt->bindParam(':newName', $newName);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return [
+                'success' => true,
+                'message' => 'Catégorie mise à jour avec succès'
+            ];
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                return [
+                    'success' => false,
+                    'message' => 'Une catégorie avec ce nom existe déjà'
+                ];
+            }
+            return [
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour de la catégorie'
+            ];
+        }
+    }
+
+    public static function delete($id) {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        try {
+            $stmt = $conn->prepare("DELETE FROM categories WHERE id_categorie = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return [
+                'success' => true,
+                'message' => 'Catégorie supprimée avec succès'
+            ];
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Erreur lors de la suppression de la catégorie'
+            ];
+        }
     }
 }

@@ -1,8 +1,11 @@
 <?php
-require_once 'connection.php';
-require_once 'User.php';
-require_once 'Course.php';
-require_once 'Tag.php';
+require_once __DIR__ . '/../config/Connection.php';
+
+require_once __DIR__ . '/Category.php'; 
+require_once __DIR__ . '/User.php'; 
+require_once __DIR__ . '/Course.php'; 
+require_once __DIR__ . '/Tags.php'; 
+
 
 class Enseignant extends User
 {
