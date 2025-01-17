@@ -1,17 +1,19 @@
 <?php
 require_once __DIR__ . '/../config/connection.php';
 
-class Course {
-    private $id;
-    private $titre;
-    private $description;
-    private $contenu;
-    private $type_contenu;
-    private $id_categorie;
-    private $id_enseignant;
-    private $statut;
+class Course
+{
+    protected $id;
+    protected $titre;
+    protected $description;
+    protected $contenu;
+    protected $type_contenu;
+    protected $id_categorie;
+    protected $id_enseignant;
+    protected $statut;
 
-    public function __construct($titre, $description, $contenu, $type_contenu, $id_categorie, $id_enseignant, $statut = 'brouillon') {
+    public function __construct($titre, $description, $contenu, $type_contenu, $id_categorie, $id_enseignant, $statut)
+    {
         $this->titre = $titre;
         $this->description = $description;
         $this->contenu = $contenu;
@@ -21,13 +23,12 @@ class Course {
         $this->statut = $statut;
     }
 
-    public function create() {
+    public function create()
+    {
         $db = Database::getInstance();
         $conn = $db->getConnection();
-        
-        $stmt = $conn->prepare("INSERT INTO cours (titre, description, contenu, type_contenu, id_categorie, id_enseignant, statut) 
-                               VALUES (:titre, :description, :contenu, :type_contenu, :id_categorie, :id_enseignant, :statut)");
-        
+
+        $stmt = $conn->prepare("INSERT INTO cours (titre, description, contenu, type_contenu, id_categorie, id_enseignant, statut) VALUES (:titre, :description, :contenu, :type_contenu, :id_categorie, :id_enseignant, :statut)");
         $stmt->bindParam(':titre', $this->titre);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':contenu', $this->contenu);
@@ -35,26 +36,28 @@ class Course {
         $stmt->bindParam(':id_categorie', $this->id_categorie);
         $stmt->bindParam(':id_enseignant', $this->id_enseignant);
         $stmt->bindParam(':statut', $this->statut);
-        
         $stmt->execute();
+
         return $conn->lastInsertId();
     }
 
-    public static function getAllCourses() {
+    public function getAllCategories()
+    {
         $db = Database::getInstance();
         $conn = $db->getConnection();
-        
-        $stmt = $conn->query("SELECT * FROM cours");
+
+        $stmt = $conn->prepare("SELECT id_categorie, nom FROM categories");
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getCourseById($id) {
+    public function getAllTags()
+    {
         $db = Database::getInstance();
         $conn = $db->getConnection();
-        
-        $stmt = $conn->prepare("SELECT * FROM cours WHERE id = :id");
-        $stmt->bindParam(':id', $id);
+
+        $stmt = $conn->prepare("SELECT id_tag, nom FROM tags");
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

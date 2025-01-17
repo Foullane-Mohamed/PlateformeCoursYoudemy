@@ -1,3 +1,41 @@
+<?php
+session_start();
+require_once __DIR__ . '/../../models/Course.php';
+require_once __DIR__ . '/../../models/Category.php';
+require_once __DIR__ . '/../../models/Tag.php';
+require_once __DIR__ . '/../../models/Enseignant.php';
+
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'enseignant') {
+    header('Location: ../auth/login.php');
+    exit();
+}
+
+$courseModel = new Course(null, null, null, null, null, null, null);
+$categories = $courseModel->getAllCategories();
+$tagModel = new Tag(null);
+$tags = $tagModel->getAllTags();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $titre = $_POST['titre'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $contenu = $_POST['contenu'] ?? '';
+    $type_contenu = $_POST['type_contenu'] ?? '';
+    $id_categorie = $_POST['id_categorie'] ?? '';
+    $tags = $_POST['tags'] ?? [];
+
+    if (!empty($titre) && !empty($description) && !empty($contenu) && !empty($type_contenu) && !empty($id_categorie) && !empty($tags)) {
+        $enseignant = new Enseignant(null, null, null, null, null);
+        $enseignant->id = $_SESSION['user']['id']; // Set the enseignant ID
+        $courseId = $enseignant->ajouterCours($titre, $description, $contenu, $type_contenu, $id_categorie, $tags);
+
+        header('Location: dashboard.php');
+        exit();
+    } else {
+        $error = 'Please fill in all fields';
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-50">
 <head>
@@ -133,7 +171,7 @@
                 </div>
 
                 <!-- Add Course Form -->
-                <form action="add_course.php" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-xl border border-gray-200">
+                <form action="ajouterCours.php" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-xl border border-gray-200">
                     <div class="mb-4">
                         <label for="titre" class="block text-sm font-medium text-gray-700">Course Title</label>
                         <input type="text" id="titre" name="titre" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
@@ -160,14 +198,18 @@
                     <div class="mb-4">
                         <label for="id_categorie" class="block text-sm font-medium text-gray-700">Category</label>
                         <select id="id_categorie" name="id_categorie" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" required>
-                            <!-- Options will be populated from the database -->
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?php echo $category['id_categorie']; ?>"><?php echo htmlspecialchars($category['nom']); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="mb-4">
                         <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
                         <select id="tags" name="tags[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" multiple required>
-                            <!-- Options will be populated from the database -->
+                            <?php foreach ($tags as $tag): ?>
+                                <option value="<?php echo $tag['id_tag']; ?>"><?php echo htmlspecialchars($category['nom']); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 

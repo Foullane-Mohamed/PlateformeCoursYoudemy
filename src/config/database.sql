@@ -94,13 +94,9 @@ INSERT INTO tags (nom) VALUES
 INSERT INTO utilisateurs (nom, email, password, role, status) VALUES
 ('mohamed', 'enseignant@youdemy.com', SHA2('prof2024', 256), 'enseignant', 'actif');
 
--- Ajout d'utilisateurs étudiants
+use youdemy;
 INSERT INTO utilisateurs (nom, email, password, role, status) VALUES
-('Thomas Petit', 'thomas.p@youdemy.com', SHA2('etudiant2024', 256), 'etudiant', 'actif'),
-('Laura Garcia', 'laura.g@youdemy.com', SHA2('etudiant2024', 256), 'etudiant', 'actif'),
-('Nicolas Roux', 'nicolas.r@youdemy.com', SHA2('etudiant2024', 256), 'etudiant', 'actif'),
-('Émilie Leroy', 'emilie.l@youdemy.com', SHA2('etudiant2024', 256), 'etudiant', 'actif'),
-('Antoine Dupont', 'antoine.d@youdemy.com', SHA2('etudiant2024', 256), 'etudiant', 'actif');
+('Marie Lambert', 'marie.l@youdemy.com', SHA2('enseignant2024', 256), 'enseignant', 'actif');
 
 -- Ajout de nouveaux cours
 INSERT INTO cours (titre, description, contenu, type_contenu, id_categorie, id_enseignant, statut) VALUES
@@ -160,6 +156,8 @@ INSERT INTO certificats (id_etudiant, id_cours) VALUES
 (18, 12); -- Émilie - Design Thinking
 
 USE  youdemy;
+SELECT * FROM utilisateurs WHERE email = 'marie.l@youdemy.com';
+
 
 INSERT INTO utilisateurs (nom, email, password, role, status)
 VALUES (

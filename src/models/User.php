@@ -3,12 +3,12 @@ require_once __DIR__ . '/../config/connection.php';
 
 class User
 {
-    private $id;
-    private $nom;
-    private $email;
-    private $password;
-    private $role;
-    private $status;
+    protected $id;
+    protected $nom;
+    protected $email;
+    protected $password;
+    protected $role;
+    protected $status;
 
     public function __construct($nom, $email, $password, $role, $status)
     {

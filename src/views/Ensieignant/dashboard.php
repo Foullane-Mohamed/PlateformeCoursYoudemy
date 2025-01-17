@@ -1,3 +1,23 @@
+<?php
+session_start();
+require_once __DIR__ . '/../../models/Course.php';
+require_once __DIR__ . '/../../models/Enseignant.php';
+
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'enseignant') {
+    header('Location: ../auth/login.php');
+    exit();
+}
+
+$enseignant = new Enseignant(null, null, null, null, null);
+$enseignantId = $_SESSION['user']['id'];
+
+// Récupérer les statistiques des cours de l'enseignant
+$totalStudents = $enseignant->getTotalStudents($enseignantId);
+$activeCourses = $enseignant->getActiveCourses($enseignantId);
+$draftCourses = $enseignant->getDraftCourses($enseignantId);
+$coursePerformance = $enseignant->getCoursePerformance($enseignantId);
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-50">
 <head>
@@ -154,7 +174,7 @@
                             </span>
                         </div>
                         <h3 class="text-gray-900 font-semibold">Total Students</h3>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">842</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $totalStudents; ?></p>
                         <p class="text-sm text-gray-500 mt-2">+56 this month</p>
                     </div>
 
@@ -170,40 +190,8 @@
                             </span>
                         </div>
                         <h3 class="text-gray-900 font-semibold">Active Courses</h3>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">12</p>
-                        <p class="text-sm text-gray-500 mt-2">2 in draft</p>
-                    </div>
-
-                    <!-- Average Rating -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center justify-center w-12 h-12 bg-yellow-50 text-yellow-600 rounded-lg">
-                                <i class="fas fa-star text-xl"></i>
-                            </div>
-                            <span class="flex items-center text-green-600 text-sm font-medium">
-                                <i class="fas fa-arrow-up mr-1 text-xs"></i>
-                                4.2%
-                            </span>
-                        </div>
-                        <h3 class="text-gray-900 font-semibold">Average Rating</h3>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">4.8</p>
-                        <p class="text-sm text-gray-500 mt-2">From 235 reviews</p>
-                    </div>
-
-                    <!-- Total Revenue -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center justify-center w-12 h-12 bg-green-50 text-green-600 rounded-lg">
-                                <i class="fas fa-dollar-sign text-xl"></i>
-                            </div>
-                            <span class="flex items-center text-green-600 text-sm font-medium">
-                                <i class="fas fa-arrow-up mr-1 text-xs"></i>
-                                12%
-                            </span>
-                        </div>
-                        <h3 class="text-gray-900 font-semibold">Total Revenue</h3>
-                        <p class="text-3xl font-bold text-gray-900 mt-2">$8,425</p>
-                        <p class="text-sm text-gray-500 mt-2">+$1,200 this month</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $activeCourses; ?></p>
+                        <p class="text-sm text-gray-500 mt-2"><?php echo $draftCourses; ?> in draft</p>
                     </div>
                 </div>
 
@@ -221,119 +209,100 @@
                         </div>
                         <div class="space-y-4">
                             <!-- Course Item -->
-                            <div class="p-4 hover:bg-gray-50 rounded-lg">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h3 class="font-medium text-gray-900">React Fundamentals</h3>
-                                        <p class="text-sm text-gray-500 mt-1">256 students</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-lg font-semibold text-gray-900">4.7</p>
-                                        <div class="flex text-yellow-400 text-sm">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
+                            <?php foreach ($coursePerformance as $course): ?>
+                                <div class="p-4 hover:bg-gray-50 rounded-lg">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-medium text-gray-900"><?php echo $course['titre']; ?></h3>
+                                            <p class="text-sm text-gray-500 mt-1"><?php echo $course['nombre_etudiants']; ?> students</p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Course Item -->
-                            <div class="p-4 hover:bg-gray-50 rounded-lg">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h3 class="font-medium text-gray-900">Node.js Mastery</h3>
-                                        <p class="text-sm text-gray-500 mt-1">178 students</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-lg font-semibold text-gray-900">4.8</p>
-                                        <div class="flex text-yellow-400 text-sm">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Recent Reviews -->
-                    <div class="bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-bold text-gray-900">Recent Reviews</h2>
-                            <button class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                                View all
-                            </button>
-                        </div>
-                        <div class="space-y-6">
-                            <!-- Review Item -->
-                            <div class="space-y-3">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Alex+Johnson" alt="" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <h3 class="font-medium text-gray-900">Alex Johnson</h3>
-                                            <p class="text-sm text-gray-500">Advanced JavaScript</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex text-yellow-400 text-sm">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-gray-600">"Great course! The instructor explains complex concepts in a very clear way. Highly recommended!"</p>
+                <!-- Course Management -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 mt-8">
+                    <h2 class="text-lg font-bold text-gray-900 mb-6">Manage Courses</h2>
+                    <div class="space-y-4">
+                        <!-- Add Course Form -->
+                        <form action="ajouterCours.php" method="POST" class="space-y-4">
+                            <div>
+                                <label for="titre" class="block text-sm font-medium text-gray-700">Title</label>
+                                <input type="text" id="titre" name="titre" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             </div>
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <textarea id="description" name="description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label for="contenu" class="block text-sm font-medium text-gray-700">Content (Video or Document)</label>
+                                <input type="file" id="contenu" name="contenu" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
+                                <input type="text" id="tags" name="tags" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="categorie" class="block text-sm font-medium text-gray-700">Category</label>
+                                <select id="categorie" name="categorie" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <?php foreach ($enseignant->getAllCategories() as $category): ?>
+                                        <option value="<?php echo $category['id_categorie']; ?>"><?php echo $category['nom']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Add Course
+                                </button>
+                            </div>
+                        </form>
 
-                            <!-- Review Item -->
-                            <div class="space-y-3">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Sarah+Williams" alt="" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <h3 class="font-medium text-gray-900">Sarah Williams</h3>
-                                            <p class="text-sm text-gray-500">React Fundamentals</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex text-yellow-400 text-sm">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-gray-600">"The content is very comprehensive and well-structured. Looking forward to the advanced course!"</p>
+                        <!-- Edit Course Form -->
+                        <form action="modifierCours.php" method="POST" class="space-y-4">
+                            <input type="hidden" name="idCours" value="">
+                            <div>
+                                <label for="edit_titre" class="block text-sm font-medium text-gray-700">Title</label>
+                                <input type="text" id="edit_titre" name="edit_titre" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             </div>
+                            <div>
+                                <label for="edit_description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <textarea id="edit_description" name="edit_description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label for="edit_contenu" class="block text-sm font-medium text-gray-700">Content (Video or Document)</label>
+                                <input type="file" id="edit_contenu" name="edit_contenu" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="edit_tags" class="block text-sm font-medium text-gray-700">Tags</label>
+                                <input type="text" id="edit_tags" name="edit_tags" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="edit_categorie" class="block text-sm font-medium text-gray-700">Category</label>
+                                <select id="edit_categorie" name="edit_categorie" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <?php foreach ($enseignant->getAllCategories() as $category): ?>
+                                        <option value="<?php echo $category['id_categorie']; ?>"><?php echo $category['nom']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Update Course
+                                </button>
+                            </div>
+                        </form>
 
-                            <!-- Review Item -->
-                            <div class="space-y-3">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <img src="https://ui-avatars.com/api/?name=Mike+Brown" alt="" class="w-10 h-10 rounded-full">
-                                        <div>
-                                            <h3 class="font-medium text-gray-900">Mike Brown</h3>
-                                            <p class="text-sm text-gray-500">Node.js Mastery</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex text-yellow-400 text-sm">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-gray-600">"Excellent course with practical examples. The project-based approach really helped me understand the concepts."</p>
+                        <!-- Delete Course Form -->
+                        <form action="supprimerCours.php" method="POST" class="space-y-4">
+                            <input type="hidden" name="idCours" value="">
+                            <div>
+                                <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    Delete Course
+                                </button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </main>

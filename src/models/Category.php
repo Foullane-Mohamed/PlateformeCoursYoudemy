@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../config/connection.php';
 
 class Category {
-    private $id;
-    private $nom;
+    protected $id;
+    protected $nom;
 
     public function __construct($nom) {
         $this->nom = $nom;
