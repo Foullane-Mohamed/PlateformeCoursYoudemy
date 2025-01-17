@@ -7,7 +7,11 @@ require_once __DIR__ . '/Tag.php';
 
 class Enseignant extends User
 {
-    public $id; // تم تعديل الخاصية لتكون عامة
+    protected $id; 
+    public function __construct($id){
+      $this->id = $id;
+    }
+
 
     public function getId()
     {
@@ -33,6 +37,10 @@ class Enseignant extends User
 
     private function ajouterTagACours($idCours, $idTag)
     {
+        if (is_null($idTag)) {
+            throw new Exception('Tag ID cannot be null');
+        }
+
         $db = Database::getInstance();
         $conn = $db->getConnection();
 
@@ -144,11 +152,7 @@ class Enseignant extends User
         return $result['draft_courses'];
     }
 
-    public function getAverageRating($enseignantId)
-    {
-        // تم تعطيل هذه الدالة لأن جدول evaluations غير موجود
-        return 0; // يمكنك تعديل هذه القيمة حسب الحاجة
-    }
+  
 
     public function getCoursePerformance($enseignantId)
     {

@@ -25,6 +25,7 @@ youdemy/
 │   │   │   ├── statistique.php
 │   │   │   ├── enseignanValidation.php
 │   │   │   ├── users.php
+│   │   │   ├── gestionTag.php
 │   │   │   └── tags.php
 │   │   │   
 │   │   ├── ensieignant/

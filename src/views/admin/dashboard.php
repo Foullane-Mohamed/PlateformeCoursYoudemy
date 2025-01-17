@@ -148,6 +148,10 @@ if (isset($_SESSION['message'])) {
                 <i class="fas fa-folder mr-2"></i>
                 Catégories
               </a>
+              <a href="gestionTag.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+                <i class="fas fa-folder mr-2"></i>
+                Tags
+              </a>
             </div>
           </div>
 

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="h-full">
     <div class="min-h-screen bg-gray-50 flex">
         <!-- Sidebar -->
-        <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200">
+        <aside class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 bg-white border-r border-gray-200">
             <!-- Logo -->
             <div class="flex items-center h-16 px-6 border-b border-gray-200 bg-white">
                 <div class="flex items-center gap-2">
@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
+                <!-- Main Navigation -->
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
                     <div class="mt-4 space-y-1">
@@ -72,20 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <i class="fas fa-chart-line w-5 h-5"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-book w-5 h-5"></i>
-                            <span class="ml-3">My Courses</span>
-                        </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-users w-5 h-5"></i>
-                            <span class="ml-3">Students</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Content</h3>
-                    <div class="mt-4 space-y-1">
                         <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600">
                             <i class="fas fa-plus-circle w-5 h-5"></i>
                             <span class="ml-3">Create Course</span>
@@ -101,6 +88,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
+                <!-- Content Navigation -->
+                <div>
+                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Content</h3>
+                    <div class="mt-4 space-y-1">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600">
+                            <i class="fas fa-tags w-5 h-5"></i>
+                            <span class="ml-3">Tags</span>
+                        </a>
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                            <i class="fas fa-cog w-5 h-5"></i>
+                            <span class="ml-3">Profile</span>
+                        </a>
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                            <i class="fas fa-bell w-5 h-5"></i>
+                            <span class="ml-3">Notifications</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Settings Navigation -->
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Settings</h3>
                     <div class="mt-4 space-y-1">
@@ -115,20 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </nav>
-
-            <!-- Profile Section -->
-            <div class="border-t border-gray-200 p-4">
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50">
-                    <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Teacher" class="w-8 h-8 rounded-lg">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 truncate">John Doe</p>
-                        <p class="text-xs text-gray-500 truncate">Web Development</p>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-500">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -137,34 +130,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
                 <div class="px-4 sm:px-6 lg:px-8 py-4">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <button class="lg:hidden text-gray-500 hover:text-gray-600">
-                                <i class="fas fa-bars text-xl"></i>
-                            </button>
-                            <div class="hidden sm:block">
+                        <!-- Search and Filters -->
+                        <div class="flex items-center gap-4">
+                            <div class="relative">
                                 <input type="text"
-                                       placeholder="Search your courses..."
+                                       placeholder="Search courses..."
                                        class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <button class="relative p-2 text-gray-400 hover:text-gray-500">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
-                            </button>
-                            <button class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                                <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Teacher" class="w-8 h-8 rounded-lg">
-                                <span class="hidden sm:block font-medium text-sm text-gray-700">John Doe</span>
-                            </button>
-                        </div>
+                        <!-- Add New Course Button -->
+                        <button class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <i class="fas fa-plus mr-2"></i>
+                            Add New Course
+                        </button>
                     </div>
                 </div>
             </header>
 
             <!-- Page Content -->
             <main class="flex-1 p-6">
-                <!-- Welcome Section -->
+                <!-- Page Header -->
                 <div class="mb-8">
                     <h1 class="text-2xl font-bold text-gray-900">Add New Course</h1>
                     <p class="mt-2 text-sm text-gray-600">Fill in the details to create a new course.</p>
@@ -208,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
                         <select id="tags" name="tags[]" class="mt-1 p-2 w-full border border-gray-300 rounded-lg" multiple required>
                             <?php foreach ($tags as $tag): ?>
-                                <option value="<?php echo $tag['id_tag']; ?>"><?php echo htmlspecialchars($category['nom']); ?></option>
+                                <option value="<?php echo $tag['id_tag']; ?>"><?php echo htmlspecialchars($tag['nom']); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
