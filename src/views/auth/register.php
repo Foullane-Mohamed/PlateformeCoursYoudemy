@@ -5,28 +5,27 @@ require_once __DIR__ . '/../../models/Auth.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nom = $_POST['nom'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? '';
+  $nom = trim($_POST['nom'] ?? '');
+  $email = trim($_POST['email'] ?? '');
+  $password = trim($_POST['password'] ?? '');
+  $role = trim($_POST['role'] ?? '');
 
-    if (!empty($nom) && !empty($email) && !empty($password) && !empty($role)) {
-    // $password = hash('sha256', $password);
-  
-        $auth = new Auth();
-        $result = $auth->register($nom, $email, $password, $role);
+  if (!empty($nom) && !empty($email) && !empty($password) && !empty($role)) {
+      $auth = new Auth();
+      $result = $auth->register($nom, $email, $password, $role);
 
-        if (isset($result['success'])) {
-            $_SESSION['message'] = $result['success'];
-            $_SESSION['messageType'] = 'success';
-            header('Location: login.php');
-            exit();
-        } else {
-            $error = $result['error'];
-        }
-    } else {
-        $error = 'Please fill in all fields';
-    }
+      if (isset($result['success'])) {
+          $_SESSION['message'] = $result['success'];
+          $_SESSION['messageType'] = 'success';
+
+          header('Location: login.php');
+          exit();
+      } else {
+          $error = $result['error'] ?? 'An unknown error occurred.';
+      }
+  } else {
+      $error = 'Please fill in all fields.';
+  }
 }
 ?>
 
