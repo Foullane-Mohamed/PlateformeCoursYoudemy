@@ -116,50 +116,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <div class="flex justify-between h-16">
           <!-- Logo et liens de navigation -->
           <div class="flex">
-            <div class="flex-shrink-0 flex items-center">
-              <img class="h-10 w-auto" src="/path/to/your/logo.png" alt="Youdemy">
-            </div>
+          
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
               <a href="dashboard.php" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                 <i class="fas fa-chart-line mr-2"></i>
                 Tableau de Bord
               </a>
-              <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
-                <i class="fas fa-users mr-2"></i>
-                Utilisateurs
-              </a>
-              <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
-                <i class="fas fa-graduation-cap mr-2"></i>
-                Cours
-              </a>
-              <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
-                <i class="fas fa-folder mr-2"></i>
-                Catégories
-              </a>
+            
             </div>
           </div>
 
           <!-- Section droite avec recherche, notifications et profil -->
           <div class="hidden sm:ml-6 sm:flex sm:items-center">
-            <!-- Barre de recherche -->
-            <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
-              <div class="max-w-lg w-full lg:max-w-xs">
-                <label for="search" class="sr-only">Rechercher</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400"></i>
-                  </div>
-                  <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Rechercher..." type="search">
-                </div>
-              </div>
-            </div>
-
-            <!-- Bouton notifications -->
-            <button class="bg-white p-2 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative">
-              <span class="sr-only">Notifications</span>
-              <i class="fas fa-bell text-xl"></i>
-              <span class="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-400"></span>
-            </button>
+    
 
             <!-- Menu profil -->
             <div class="ml-3 relative">
@@ -168,8 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                   <span class="sr-only">Open user menu</span>
                   <img class="h-8 w-8 rounded-full object-cover border-2 border-gray-200" src="https://ui-avatars.com/api/?name=<?php echo urlencode($_SESSION['user']['nom']); ?>&background=random" alt="">
                   <span class="ml-2 text-gray-700 font-medium"><?php echo htmlspecialchars($_SESSION['user']['nom']); ?></span>
-                  <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+                  
+                  
+
                 </button>
+                <a href="../auth/logout.php" class="block px-4 py-2 text-sm text-red-700 hover:bg-red-50" role="menuitem" onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
+                      <i class="fas fa-sign-out-alt mr-2"></i>
+                      Déconnexion
+                  </a>
               </div>
               <!-- Menu déroulant du profil -->
               <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu">

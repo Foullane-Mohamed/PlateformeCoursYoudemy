@@ -20,18 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $_SESSION['user'];
                 
                 switch ($user['role']) {
-                  case 'admin':
-                      header('Location: ../admin/dashboard.php');
-                      break;
-                  case 'enseignant':
-                      header('Location: ../Ensieignant/dashboard.php');
-                      break;
-                  case 'etudiant':
-                      header('Location: ../etudiant/dashboard.php');
-                      break;
-                  default:
-                      header('Location: ../../index.php');
-              }
+                    case 'admin':
+                        header('Location: ../admin/dashboard.php');
+                        break;
+                    case 'enseignant':
+                        header('Location: ../Ensieignant/dashboard.php');
+                        break;
+                    case 'etudiant':
+                        header('Location: ../etudiant/dashboard.php');
+                        break;
+                    default:
+                        header('Location: ../../index.php');
+                }
                 exit();
             } else {
                 $error = $result['error'];
@@ -44,8 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-?>
-
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-50">
 <head>

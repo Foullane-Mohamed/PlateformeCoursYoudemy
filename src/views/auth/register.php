@@ -5,30 +5,29 @@ require_once __DIR__ . '/../../models/Auth.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $nom = trim($_POST['nom'] ?? '');
-  $email = trim($_POST['email'] ?? '');
-  $password = trim($_POST['password'] ?? '');
-  $role = trim($_POST['role'] ?? '');
+    $nom = trim($_POST['nom'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $role = trim($_POST['role'] ?? '');
 
-  if (!empty($nom) && !empty($email) && !empty($password) && !empty($role)) {
-      $auth = new Auth();
-      $result = $auth->register($nom, $email, $password, $role);
+    if (!empty($nom) && !empty($email) && !empty($password) && !empty($role)) {
+        $auth = new Auth();
+        $result = $auth->register($nom, $email, $password, $role);
 
-      if (isset($result['success'])) {
-          $_SESSION['message'] = $result['success'];
-          $_SESSION['messageType'] = 'success';
+        if (isset($result['success'])) {
+            $_SESSION['message'] = $result['success'];
+            $_SESSION['messageType'] = 'success';
 
-          header('Location: login.php');
-          exit();
-      } else {
-          $error = $result['error'] ?? 'An unknown error occurred.';
-      }
-  } else {
-      $error = 'Please fill in all fields.';
-  }
+            header('Location: login.php');
+            exit();
+        } else {
+            $error = $result['error'] ?? 'An unknown error occurred.';
+        }
+    } else {
+        $error = 'Please fill in all fields.';
+    }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-50">
 <head>
@@ -38,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Custom animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }

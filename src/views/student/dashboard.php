@@ -1,352 +1,213 @@
+<?php
+session_start();
+require_once __DIR__ . '/../../models/User.php';  // تحميل الكلاس User
+require_once __DIR__ . '/../../models/Enseignant.php';  // تحميل الكلاس Enseignant
+
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'enseignant') {
+    header('Location: ../auth/login.php');
+    exit();
+}
+
+// إنشاء كائن Enseignant باستخدام المعرف
+$enseignantId = $_SESSION['user']['id'];
+$enseignant = new Enseignant($enseignantId);
+
+// Récupérer les statistiques des cours de l'enseignant
+$totalStudents = $enseignant->getTotalStudents();
+$activeCourses = $enseignant->getActiveCourses();
+$draftCourses = $enseignant->getDraftCourses();
+$coursePerformance = $enseignant->getCoursePerformance();
+?>
+
 <!DOCTYPE html>
-<html lang="fr" class="h-full">
+<html lang="en" class="h-full bg-gray-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youdemy - Tableau de Bord Étudiant</title>
+    <title>Youdemy Teacher Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f6f9;
-        }
-        .course-grid {
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .shadow-soft {
-            box-shadow: 0 10px 25px -10px rgba(108, 108, 193, 0.2);
-        }
-        .progress-bar {
-            background: linear-gradient(to right, #4338ca, #6366f1);
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
-    <div class="min-h-screen flex">
+<body class="h-full">
+    <div class="min-h-screen bg-gray-50 flex">
         <!-- Sidebar -->
-        <aside class="hidden lg:flex lg:flex-col lg:w-72 bg-white shadow-xl">
+        <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200">
             <!-- Logo -->
-            <div class="px-6 py-5 border-b border-gray-200 gradient-bg">
-                <div class="flex items-center">
-                    <div class="bg-white bg-opacity-20 p-3 rounded-lg mr-3">
-                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+            <div class="flex items-center h-16 px-6 border-b border-gray-200 bg-white">
+                <div class="flex items-center gap-2">
+                    <div class="bg-indigo-600 p-2 rounded-lg">
+                        <i class="fas fa-chalkboard-teacher text-white"></i>
                     </div>
-                    <span class="text-2xl font-bold text-white">Youdemy</span>
+                    <span class="text-xl font-bold text-gray-900">Youdemy</span>
                 </div>
             </div>
 
             <!-- Navigation -->
-            <nav class="flex-grow py-6 px-4 space-y-2">
-                <!-- Main Navigation -->
+            <nav class="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
                 <div>
-                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                        Mon Parcours
-                    </h3>
-                    <div class="space-y-1">
-                        <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all">
-                            <i class="fas fa-home w-5 h-5 mr-3 text-indigo-500 group-hover:text-indigo-600"></i>
-                            Tableau de Bord
+                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
+                    <div class="mt-4 space-y-1">
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600">
+                            <i class="fas fa-chart-line w-5 h-5"></i>
+                            <span class="ml-3">Dashboard</span>
                         </a>
-                        <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
-                            <i class="fas fa-book w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500"></i>
-                            Mes Cours
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                            <i class="fas fa-book w-5 h-5"></i>
+                            <span class="ml-3">My Courses</span>
                         </a>
-                        <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
-                            <i class="fas fa-certificate w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500"></i>
-                            Certificats
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                            <i class="fas fa-users w-5 h-5"></i>
+                            <span class="ml-3">Students</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- Découverte -->
-                <div class="mt-6">
-                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                        Découverte
-                    </h3>
-                    <div class="space-y-1">
-                        <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
-                            <i class="fas fa-search w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500"></i>
-                            Catalogue des Cours
-                        </a>
-                        <a href="#" class="group flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
-                            <i class="fas fa-tags w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500"></i>
-                            Catégories
+                <!-- إضافة زر تسجيل الخروج هنا -->
+                <div>
+                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Account</h3>
+                    <div class="mt-4 space-y-1">
+                        <a href="../auth/logout.php" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                            <i class="fas fa-sign-out-alt w-5 h-5"></i>
+                            <span class="ml-3">Logout</span>
                         </a>
                     </div>
                 </div>
             </nav>
-
-            <!-- Profile Section -->
-            <div class="border-t border-gray-200 p-4">
-                <div class="flex items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-all">
-                    <img src="https://ui-avatars.com/api/?name=Jean+Dupont" alt="Étudiant" class="w-10 h-10 rounded-full mr-3 shadow-md">
-                    <div class="flex-grow">
-                        <p class="text-sm font-semibold text-gray-900">Jean Dupont</p>
-                        <p class="text-xs text-gray-500">jean.dupont@example.com</p>
-                    </div>
-                    <button class="text-gray-400 hover:text-gray-600 transition-all">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-grow bg-gray-100">
+        <div class="lg:pl-72 flex flex-col flex-1">
             <!-- Top Navigation -->
-            <header class="bg-white shadow-sm sticky top-0 z-10">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
+                <div class="px-4 sm:px-6 lg:px-8 py-4">
                     <div class="flex items-center justify-between">
-                        <!-- Search -->
-                        <div class="flex-grow max-w-xl mr-6">
-                            <div class="relative">
-                                <input type="text" 
-                                       placeholder="Rechercher des cours..." 
-                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-search text-gray-400"></i>
-                                </div>
+                        <div class="flex items-center gap-3">
+                            <button class="lg:hidden text-gray-500 hover:text-gray-600">
+                                <i class="fas fa-bars text-xl"></i>
+                            </button>
+                            <div class="hidden sm:block">
+                                <input type="text"
+                                       placeholder="Search your courses..."
+                                       class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
                         </div>
 
-                        <!-- Notifications -->
-                        <div class="flex items-center">
-                            <button class="relative p-2 text-gray-500 hover:text-indigo-600 transition-all mr-4">
-                                <i class="fas fa-bell text-lg"></i>
+                        <div class="flex items-center gap-4">
+                            <button class="relative p-2 text-gray-400 hover:text-gray-500">
+                                <i class="fas fa-bell"></i>
                                 <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
                             </button>
-
-                            <button class="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-700 transition-all">
-                                <i class="fas fa-plus mr-2"></i>
-                                Nouveau Cours
-                            </button>
+                            <!-- إضافة زر تسجيل الخروج هنا -->
+                            <a href="../auth/logout.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-sign-out-alt text-gray-600"></i>
+                                <span class="hidden sm:block font-medium text-sm text-gray-700">Logout</span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main class="flex-1 p-6">
                 <!-- Welcome Section -->
                 <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Bonjour, Jean Dupont</h1>
-                    <p class="text-gray-600">Continuez votre apprentissage et atteignez vos objectifs.</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Teacher Dashboard</h1>
+                    <p class="mt-2 text-sm text-gray-600">Monitor your courses and student engagement.</p>
                 </div>
 
-                <!-- Progress Overview -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white p-5 rounded-xl shadow-soft hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="bg-green-100 text-green-600 p-3 rounded-lg">
-                                <i class="fas fa-book-open text-xl"></i>
+                <!-- Stats Grid -->
+                <div class="stats-grid mb-8">
+                    <!-- Total Students -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center justify-center w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg">
+                                <i class="fas fa-users text-xl"></i>
                             </div>
-                            <span class="text-green-600 font-medium text-sm flex items-center">
-                                <i class="fas fa-arrow-up mr-1"></i>12%
+                            <span class="flex items-center text-green-600 text-sm font-medium">
+                                <i class="fas fa-arrow-up mr-1 text-xs"></i>
+                                15%
                             </span>
                         </div>
-                        <h3 class="text-gray-500 text-sm mb-1">Cours Terminés</h3>
-                        <p class="text-2xl font-bold text-gray-900">8</p>
+                        <h3 class="text-gray-900 font-semibold">Total Students</h3>
+                        <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $totalStudents; ?></p>
+                        <p class="text-sm text-gray-500 mt-2">+56 this month</p>
                     </div>
-                    <div class="bg-white p-5 rounded-xl shadow-soft hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg">
-                                <i class="fas fa-clock text-xl"></i>
+
+                    <!-- Active Courses -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-lg">
+                                <i class="fas fa-book text-xl"></i>
                             </div>
-                            <span class="text-green-600 font-medium text-sm flex items-center">
-                                <i class="fas fa-arrow-up mr-1"></i>5%
+                            <span class="flex items-center text-green-600 text-sm font-medium">
+                                <i class="fas fa-arrow-up mr-1 text-xs"></i>
+                                8%
                             </span>
                         </div>
-                        <h3 class="text-gray-500 text-sm mb-1">Temps d'Étude</h3>
-                        <p class="text-2xl font-bold text-gray-900">42h</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-soft hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="bg-purple-100 text-purple-600 p-3 rounded-lg">
-                                <i class="fas fa-certificate text-xl"></i>
-                            </div>
-                            <span class="text-green-600 font-medium text-sm flex items-center">
-                                <i class="fas fa-arrow-up mr-1"></i>3
-                            </span>
-                        </div>
-                        <h3 class="text-gray-500 text-sm mb-1">Certificats</h3>
-                        <p class="text-2xl font-bold text-gray-900">5</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-soft hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="bg-red-100 text-red-600 p-3 rounded-lg">
-                                <i class="fas fa-chart-line text-xl"></i>
-                            </div>
-                            <span class="text-green-600 font-medium text-sm flex items-center">
-                                <i class="fas fa-arrow-up mr-1"></i>8%
-                            </span>
-                        </div>
-                        <h3 class="text-gray-500 text-sm mb-1">Progression</h3>
-                        <p class="text-2xl font-bold text-gray-900">65%</p>
+                        <h3 class="text-gray-900 font-semibold">Active Courses</h3>
+                        <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $activeCourses; ?></p>
+                        <p class="text-sm text-gray-500 mt-2"><?php echo $draftCourses; ?> in draft</p>
                     </div>
                 </div>
 
-                <!-- Cours en Cours -->
-                <section class="mb-8">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900">Mes Cours en Cours</h2>
-                        <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium transition-all">
-                            Voir tous les cours
-                        </a>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Cours Card 1 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-soft hover:shadow-lg transition-all group">
-                            <div class="relative">
-                                <img src="https://ui-avatars.com/api/?name=Web+Dev" alt="Cours" class="w-full h-48 object-cover">
-                                <div class="absolute top-4 right-4 bg-white bg-opacity-80 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                                    65% Terminé
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Développement Web Complet</h3>
-                                <p class="text-gray-500 text-sm mb-4">Maîtrisez le développement web de A à Z</p>
-                                <div class="mb-4">
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="progress-bar h-2.5 rounded-full" style="width: 65%"></div>
+                <!-- Recent Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Course Performance -->
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-bold text-gray-900">Course Performance</h2>
+                            <select class="text-sm text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5">
+                                <option>Last 7 days</option>
+                                <option>Last 30 days</option>
+                                <option>Last 3 months</option>
+                            </select>
+                        </div>
+                        <div class="space-y-4">
+                            <!-- Course Item -->
+                            <?php foreach ($coursePerformance as $course): ?>
+                                <div class="p-4 hover:bg-gray-50 rounded-lg">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-medium text-gray-900"><?php echo $course['titre']; ?></h3>
+                                            <p class="text-sm text-gray-500 mt-1"><?php echo $course['nombre_etudiants']; ?> students</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <img src="https://ui-avatars.com/api/?name=John+Doe" class="w-8 h-8 rounded-full mr-2" alt="Instructeur">
-                                        <span class="text-sm text-gray-600">John Doe</span>
-                                    </div>
-                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-all">
-                                        Continuer
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                      
-                        <!-- Cours Card 3 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-soft hover:shadow-lg transition-all group">
-                            <div class="relative">
-                                <img src="https://ui-avatars.com/api/?name=Mobile+Dev" alt="Cours" class="w-full h-48 object-cover">
-                                <div class="absolute top-4 right-4 bg-white bg-opacity-80 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                                    25% Terminé
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Développement Mobile</h3>
-                                <p class="text-gray-500 text-sm mb-4">Création d'applications mobiles modernes</p>
-                                <div class="mb-4">
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="progress-bar h-2.5 rounded-full" style="width: 25%"></div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <img src="https://ui-avatars.com/api/?name=Mike+Johnson" class="w-8 h-8 rounded-full mr-2" alt="Instructeur">
-                                        <span class="text-sm text-gray-600">Mike Johnson</span>
-                                    </div>
-                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-all">
-                                        Continuer
-                                    </button>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
-                </section>
-
-                <!-- Recommandations de Cours -->
-                <section>
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900">Recommandations de Cours</h2>
-                        <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium transition-all">
-                            Explorer plus de cours
-                        </a>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Cours Recommandé 1 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-soft hover:shadow-lg transition-all group">
-                            <div class="relative">
-                                <img src="https://ui-avatars.com/api/?name=JavaScript" alt="Cours JavaScript" class="w-full h-48 object-cover">
-                                <div class="absolute top-4 right-4 bg-white bg-opacity-80 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                                    Nouveau
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">JavaScript Avancé</h3>
-                                <p class="text-gray-500 text-sm mb-4">Maîtrisez les techniques modernes de développement</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="text-lg font-bold text-indigo-600">49,99 €</div>
-                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-all">
-                                        Découvrir
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cours Recommandé 2 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-soft hover:shadow-lg transition-all group">
-                            <div class="relative">
-                                <img src="https://ui-avatars.com/api/?name=Python" alt="Cours Python" class="w-full h-48 object-cover">
-                                <div class="absolute top-4 right-4 bg-white bg-opacity-80 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                                    Top Vendu
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Python pour Data Science</h3>
-                                <p class="text-gray-500 text-sm mb-4">Analyse et visualisation de données</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="text-lg font-bold text-indigo-600">59,99 €</div>
-                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-all">
-                                        Découvrir
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cours Recommandé 3 -->
-                        <div class="bg-white rounded-xl overflow-hidden shadow-soft hover:shadow-lg transition-all group">
-                            <div class="relative">
-                                <img src="https://ui-avatars.com/api/?name=React" alt="Cours React" class="w-full h-48 object-cover">
-                                <div class="absolute top-4 right-4 bg-white bg-opacity-80 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                                    Populaire
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Développement React</h3>
-                                <p class="text-gray-500 text-sm mb-4">Création d'applications web modernes</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="text-lg font-bold text-indigo-600">54,99 €</div>
-                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-all">
-                                        Découvrir
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                </div>
             </main>
         </div>
     </div>
 
     <script>
-        // Mobile menu toggle (simplified for this example)
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuButton = document.querySelector('button[aria-label="Toggle menu"]');
-            const sidebar = document.querySelector('aside');
-            
-            if (menuButton && sidebar) {
-                menuButton.addEventListener('click', () => {
-                    sidebar.classList.toggle('hidden');
-                });
+        // Mobile menu toggle
+        const menuButton = document.querySelector('button');
+        const sidebar = document.querySelector('aside');
+
+        menuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !menuButton.contains(e.target)) {
+                sidebar.classList.add('hidden');
             }
         });
     </script>
 </body>
-                  
+</html>

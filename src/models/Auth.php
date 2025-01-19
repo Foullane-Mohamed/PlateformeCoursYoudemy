@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/connection.php';  // Change this to:
+require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/User.php';
 
 class Auth
@@ -27,14 +27,14 @@ class Auth
         $user = $userModel->login($email);
 
         if ($user && password_verify($password, $user['password'])) {
-            if ($user['status'] === 'actif') {
+            if ($user['status'] === 'actif' || $user['status'] === 'en_attente') {  // السماح بتسجيل الدخول حتى لو كانت الحالة "en_attente"
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }
                 $_SESSION['user'] = $user;
                 return ['success' => 'Vous êtes maintenant connecté.'];
-            } else if ($user['status'] === 'en_attente') {
-                return ['error' => 'Votre compte est en attente de validation.'];
+            } else {
+                return ['error' => 'Votre compte est suspendu.'];
             }
         }
         return ['error' => 'Identifiants invalides.'];

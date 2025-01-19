@@ -308,4 +308,26 @@ public function getCourseTagsById($courseId)
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getMesCours()
+{
+    $db = Database::getInstance();
+    $conn = $db->getConnection();
+
+    $query = "SELECT c.*, cat.nom as category_name, 
+              COUNT(DISTINCT i.id_etudiant) as student_count,
+              GROUP_CONCAT(t.nom) as tags
+              FROM cours c
+              LEFT JOIN categories cat ON c.id_categorie = cat.id_categorie
+              LEFT JOIN cours_tags ct ON c.id = ct.id_cours
+              LEFT JOIN tags t ON ct.id_tag = t.id_tag
+              LEFT JOIN inscriptions i ON c.id = i.id_cours
+              WHERE c.id_enseignant = :id_enseignant
+              GROUP BY c.id
+              ORDER BY c.id DESC";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':id_enseignant', $this->id);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }
