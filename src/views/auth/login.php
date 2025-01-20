@@ -17,7 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $auth->login($email, $password);
 
             if (isset($result['success'])) {
-                $user = $_SESSION['user'];
+                 $user = $_SESSION['user'];
+
                 
                 switch ($user['role']) {
                     case 'admin':

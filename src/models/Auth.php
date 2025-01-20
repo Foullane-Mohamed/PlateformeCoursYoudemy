@@ -4,22 +4,26 @@ require_once __DIR__ . '/User.php';
 
 class Auth
 {
-    public function register($nom, $email, $password, $role)
-    {
-        $user = $this->getUserByEmail($email);
-        if ($user) {
-            return ['error' => 'Cet email est déjà utilisé.'];
-        }
-
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($nom, $email, $hashedPassword, $role, 'en_attente');
-        
-        if ($user->register()) {
-            return ['success' => 'Votre compte a été créé avec succès. Veuillez patienter pendant que votre compte est validé.'];
-        }
-        
-        return ['error' => 'Une erreur est survenue lors de la création du compte.'];
+  public function register($nom, $email, $password, $role)
+{
+    $user = $this->getUserByEmail($email);
+    if ($user) {
+        return ['error' => 'Cet email est déjà utilisé.'];
     }
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+  
+    $status = ($role === 'etudiant') ? 'actif' : 'en_attente';
+
+    $user = new User($nom, $email, $hashedPassword, $role, $status);
+    
+    if ($user->register()) {
+        return ['success' => 'Votre compte a été créé avec succès. Veuillez patienter pendant que votre compte est validé.'];
+    }
+    
+    return ['error' => 'Une erreur est survenue lors de la création du compte.'];
+}
 
     public function login($email, $password)
     {
@@ -27,7 +31,7 @@ class Auth
         $user = $userModel->login($email);
 
         if ($user && password_verify($password, $user['password'])) {
-            if ($user['status'] === 'actif' || $user['status'] === 'en_attente') {  // السماح بتسجيل الدخول حتى لو كانت الحالة "en_attente"
+            if ($user['status'] === 'actif' || $user['status'] === 'en_attente'  ) {  
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }

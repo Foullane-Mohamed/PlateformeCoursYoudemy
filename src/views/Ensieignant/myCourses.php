@@ -160,10 +160,18 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
                                 </div>
+                                <!-- View Video Button -->
+                                <?php if ($course['type_contenu'] === 'video'): ?>
+                                    <div class="mt-4">
+                                        <button onclick="openVideoModal('<?php echo htmlspecialchars($course['contenu']); ?>')" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700">
+                                            <i class="fas fa-play mr-2"></i> Voir la vidéo
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
                                 <!-- View Enrollments Button -->
                                 <div class="mt-4">
-                                    <a href="view_enrollments.php?id=<?php echo $course['id']; ?>" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
-                                        <i class="fas fa-users mr-2"></i> View Enrollments
+                                    <a href="view_course.php?id=<?php echo $course['id']; ?>" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+                                        <i class="fas fa-users mr-2"></i> Voir les inscriptions
                                     </a>
                                 </div>
                             </div>
@@ -188,6 +196,25 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
                     </button>
                     <button id="cancelDelete" class="ml-3 px-4 py-2 bg-gray-100 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
                         Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Video -->
+    <div id="videoModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Vidéo du cours</h3>
+                <div class="mt-2 px-7 py-3">
+                    <div class="video-container">
+                        <iframe id="videoIframe" width="100%" height="400" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button onclick="closeVideoModal()" class="px-4 py-2 bg-gray-100 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Fermer
                     </button>
                 </div>
             </div>
@@ -227,6 +254,19 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
         document.getElementById('cancelDelete').addEventListener('click', () => {
             document.getElementById('deleteModal').classList.add('hidden');
         });
+
+        // Video Modal Functionality
+        function openVideoModal(videoId) {
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = `https://www.youtube.com/embed/${videoId}`;
+            document.getElementById('videoModal').classList.remove('hidden');
+        }
+
+        function closeVideoModal() {
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = ''; // Stop the video
+            document.getElementById('videoModal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>

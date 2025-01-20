@@ -330,4 +330,53 @@ public function getCourseTagsById($courseId)
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+public function getCourseTags($courseId)
+{
+    try {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("
+            SELECT t.id_tag, t.nom
+            FROM tags t
+            JOIN cours_tags ct ON t.id_tag = ct.id_tag
+            WHERE ct.id_cours = :id_cours
+        ");
+        $stmt->bindParam(':id_cours', $courseId);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // En cas d'erreur, retourner un tableau vide
+        error_log('Error fetching course tags: ' . $e->getMessage());
+        return [];
+    }
+}
+
+
+
+
+
+
+public function getEnrollmentsForCourse($courseId)
+{
+    try {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("
+            SELECT u.nom, u.email, i.date_inscription
+            FROM inscriptions i
+            JOIN utilisateurs u ON i.id_etudiant = u.id
+            WHERE i.id_cours = :id_cours
+        ");
+        $stmt->bindParam(':id_cours', $courseId);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log('Error fetching enrollments: ' . $e->getMessage());
+        return [];
+    }
+}
 }

@@ -71,6 +71,15 @@ VALUES (
     'admin', 
     'actif'
 );
+use youdemy;
+INSERT INTO utilisateurs (nom, email, password, role, status) 
+VALUES (
+    'etudiant', 
+    'etudiant@youdemy.com', 
+    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',  -- كلمة المرور: "password"
+    'etudiant', 
+    'actif'
+);
 
 -- إضافة طالب (etudiant) مع كلمة مرور مختلفة
 INSERT INTO utilisateurs (nom, email, password, role, status) 
