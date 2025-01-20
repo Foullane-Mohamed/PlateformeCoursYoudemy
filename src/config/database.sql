@@ -91,7 +91,7 @@ VALUES (
     'etudiant', 
     'actif'
 );
-
+ALTER TABLE cours MODIFY statut ENUM('actif', 'inactif', 'en_attente') NOT NULL DEFAULT 'en_attente';
 -- إضافة معلم (enseignant) مع كلمة مرور مختلفة
 INSERT INTO utilisateurs (nom, email, password, role, status) 
 VALUES (

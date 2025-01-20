@@ -89,7 +89,7 @@ if (isset($_SESSION['message'])) {
           
               <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                 <i class="fas fa-graduation-cap mr-2"></i>
-                Tous les Cours
+                 Cours
               </a>
             
               <a href="gestionTag.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
@@ -240,24 +240,28 @@ if (isset($_SESSION['message'])) {
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <form method="POST" class="inline-flex space-x-2">
-                          <input type="hidden" name="course_id" value="<?php echo $course['id']; ?>">
-                          <button type="submit" name="status" value="actif"
-                            class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            <i class="fas fa-check mr-2"></i>
-                            Activer
-                          </button>
-                          <button type="submit" name="status" value="inactif"
-                            class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            <i class="fas fa-times mr-2"></i>
-                            Désactiver
-                          </button>
-                          <button type="submit" name="status" value="brouillon"
-                            class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                            <i class="fas fa-pencil-alt mr-2"></i>
-                            Brouillon
-                          </button>
-                        </form>
+                      <form method="POST" action="update_course_status.php" class="inline-flex space-x-2">
+    <input type="hidden" name="course_id" value="<?php echo $course['id']; ?>">
+    <input type="hidden" name="action" value="update_status">
+    
+    <button type="submit" name="status" value="actif"
+        class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+        <i class="fas fa-check mr-2"></i>
+        Activer
+    </button>
+    
+    <button type="submit" name="status" value="inactif"
+        class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+        <i class="fas fa-times mr-2"></i>
+        Désactiver
+    </button>
+    
+    <!-- <button type="submit" name="status" value="brouillon"
+        class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+        <i class="fas fa-pencil-alt mr-2"></i>
+        Brouillon
+    </button> -->
+</form>
                       </td>
                     </tr>
                   <?php endforeach; ?>

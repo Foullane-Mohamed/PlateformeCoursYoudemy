@@ -9,27 +9,26 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course_id']) && isset($_POST['action'])) {
-    $courseId = $_POST['course_id'];
-    $action = $_POST['action'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_status') {
+    if (isset($_POST['course_id']) && isset($_POST['status'])) {
+        $courseId = $_POST['course_id'];
+        $status = $_POST['status'];
 
-    $courseModel = new Course();
+        $courseModel = new Course();
 
-    try {
-        if ($action === 'approve') {
-            $courseModel->updateCourseStatus($courseId, 'actif');
-            $_SESSION['message'] = 'Cours approuvé avec succès';
+        try {
+            $courseModel->updateCourseStatus($courseId, $status);
+            $_SESSION['message'] = 'Statut du cours mis à jour avec succès';
             $_SESSION['messageType'] = 'success';
-        } elseif ($action === 'reject') {
-            $courseModel->updateCourseStatus($courseId, 'inactif');
-            $_SESSION['message'] = 'Cours refusé avec succès';
-            $_SESSION['messageType'] = 'success';
+        } catch (Exception $e) {
+            $_SESSION['message'] = 'Erreur lors de la mise à jour du cours: ' . $e->getMessage();
+            $_SESSION['messageType'] = 'error';
         }
-    } catch (Exception $e) {
-        $_SESSION['message'] = 'Erreur lors de la mise à jour du cours: ' . $e->getMessage();
+    } else {
+        $_SESSION['message'] = 'Données manquantes pour la mise à jour du statut';
         $_SESSION['messageType'] = 'error';
     }
 
-    header('Location: dashboard.php');
+    header('Location: all_courses.php');
     exit();
 }

@@ -22,6 +22,7 @@ class Course
         $this->id_enseignant = $id_enseignant;
         $this->statut = $statut;
     }
+
     public function create()
     {
         $db = Database::getInstance();
@@ -115,8 +116,8 @@ class Course
             LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
             LEFT JOIN inscriptions i ON c.id = i.id_cours
             LEFT JOIN cours_tags ct ON c.id = ct.id_cours
-            LEFT JOIN tags t ON ct.id_tag = t.id_tag
-            WHERE c.statut = 'actif'";
+            LEFT JOIN tags t ON ct.id_tag = t.id_tag";
+            // WHERE c.statut = 'actif' ";
 
         $params = [];
 
@@ -150,46 +151,48 @@ class Course
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getAllCours(){
-      $db = Database::getInstance();
-      $conn = $db->getConnection();
 
-      $stmt = $conn->prepare("SELECT * FROM cours");
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getAllCours()
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("SELECT * FROM cours");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateCourseStatus($courseId, $status)
-{
-    $db = Database::getInstance();
-    $conn = $db->getConnection();
-
-    try {
-        $stmt = $conn->prepare("UPDATE cours SET statut = :status WHERE id = :id");
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':id', $courseId);
-        $stmt->execute();
-        return true;
-    } catch (PDOException $e) {
-        throw new Exception('Erreur lors de la mise à jour du statut du cours: ' . $e->getMessage());
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+    
+        try {
+            $stmt = $conn->prepare("UPDATE cours SET statut = :status WHERE id = :id");
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':id', $courseId);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception('Erreur lors de la mise à jour du statut du cours: ' . $e->getMessage());
+        }
     }
-}
 
-public function getCoursesByStatus($status)
-{
-    $db = Database::getInstance();
-    $conn = $db->getConnection();
+    public function getCoursesByStatus($status)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
 
-    $query = "
-        SELECT c.*, u.nom as enseignant_nom
-        FROM cours c
-        LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
-        WHERE c.statut = :status
-    ";
+        $query = "
+            SELECT c.*, u.nom as enseignant_nom
+            FROM cours c
+            LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
+            WHERE c.statut = :status
+        ";
 
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':status', $status);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

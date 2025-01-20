@@ -88,46 +88,7 @@ class Enseignant extends User
         return $result['draft_courses'] ?? 0;
     }
 
-    public function ajouterCours($titre, $description, $contenu, $type_contenu, $id_categorie, $tags)
-    {
-        try {
-            $db = Database::getInstance();
-            $conn = $db->getConnection();
-            
-            // Begin transaction
-            $conn->beginTransaction();
-
-            $cours = new Course($titre, $description, $contenu, $type_contenu, $id_categorie, $this->id, 'en_attente');
-            $coursId = $cours->create();
-
-            // Add tags
-            if (!empty($tags)) {
-                foreach ($tags as $tagName) {
-                    $tag = new Tag($tagName);
-                    $tagResult = $tag->getTagByName($tagName);
-                    
-                    if (!$tagResult) {
-                        $createResult = $tag->create();
-                        if ($createResult['success']) {
-                            $tagId = $createResult['id'];
-                        } else {
-                            throw new Exception($createResult['message']);
-                        }
-                    } else {
-                        $tagId = $tagResult['id_tag'];
-                    }
-
-                    $this->ajouterTagACours($coursId, $tagId);
-                }
-            }
-
-            $conn->commit();
-            return ['success' => true, 'id' => $coursId];
-        } catch (Exception $e) {
-            $conn->rollBack();
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
-    }
+  
 
     private function ajouterTagACours($idCours, $idTag)
     {
@@ -377,6 +338,47 @@ public function getEnrollmentsForCourse($courseId)
     } catch (PDOException $e) {
         error_log('Error fetching enrollments: ' . $e->getMessage());
         return [];
+    }
+}
+public function ajouterCours($titre, $description, $contenu, $type_contenu, $id_categorie, $tags)
+{
+    try {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+        
+        // Begin transaction
+        $conn->beginTransaction();
+
+        // Create the course with status 'en_attente'
+        $cours = new Course($titre, $description, $contenu, $type_contenu, $id_categorie, $this->id, 'en_attente');
+        $coursId = $cours->create();
+
+        // Add tags
+        if (!empty($tags)) {
+            foreach ($tags as $tagName) {
+                $tag = new Tag($tagName);
+                $tagResult = $tag->getTagByName($tagName);
+                
+                if (!$tagResult) {
+                    $createResult = $tag->create();
+                    if ($createResult['success']) {
+                        $tagId = $createResult['id'];
+                    } else {
+                        throw new Exception($createResult['message']);
+                    }
+                } else {
+                    $tagId = $tagResult['id_tag'];
+                }
+
+                $this->ajouterTagACours($coursId, $tagId);
+            }
+        }
+
+        $conn->commit();
+        return ['success' => true, 'id' => $coursId];
+    } catch (Exception $e) {
+        $conn->rollBack();
+        return ['success' => false, 'message' => $e->getMessage()];
     }
 }
 }

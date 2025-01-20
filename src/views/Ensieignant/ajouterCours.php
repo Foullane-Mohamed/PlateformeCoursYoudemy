@@ -21,61 +21,62 @@ $message = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate and sanitize input
-    $titre = trim($_POST['titre'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $type_contenu = trim($_POST['type_contenu'] ?? '');
-    $id_categorie = filter_input(INPUT_POST, 'id_categorie', FILTER_VALIDATE_INT);
-    $selectedTags = isset($_POST['tags']) ? (array)$_POST['tags'] : [];
-    $youtube_url = trim($_POST['youtube_url'] ?? '');
-    $drive_link = trim($_POST['drive_link'] ?? '');
+  // Validate and sanitize input
+  $titre = trim($_POST['titre'] ?? '');
+  $description = trim($_POST['description'] ?? '');
+  $type_contenu = trim($_POST['type_contenu'] ?? '');
+  $id_categorie = filter_input(INPUT_POST, 'id_categorie', FILTER_VALIDATE_INT);
+  $selectedTags = isset($_POST['tags']) ? (array)$_POST['tags'] : [];
+  $youtube_url = trim($_POST['youtube_url'] ?? '');
+  $drive_link = trim($_POST['drive_link'] ?? '');
 
-    // Basic validation
-    if (!$titre || !$description || !$type_contenu || !$id_categorie || empty($selectedTags)) {
-        $error = 'Veuillez remplir tous les champs obligatoires.';
-    } else {
-        try {
-            $contenu = '';
-            
-            if ($type_contenu === 'video') {
-                if (empty($youtube_url)) {
-                    throw new Exception('Le lien YouTube est requis pour les vidéos.');
-                }
-                // Extract YouTube video ID
-                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $youtube_url, $matches)) {
-                    $contenu = $matches[1]; // Store just the video ID
-                } else {
-                    throw new Exception('Le lien YouTube n\'est pas valide.');
-                }
-            } else if ($type_contenu === 'document') {
-                if (empty($drive_link)) {
-                    throw new Exception('Le lien Google Drive est requis pour les documents.');
-                }
-                $contenu = $drive_link;  // Store the Google Drive link
-            }
+  // Basic validation
+  if (!$titre || !$description || !$type_contenu || !$id_categorie || empty($selectedTags)) {
+      $error = 'Veuillez remplir tous les champs obligatoires.';
+  } else {
+      try {
+          $contenu = '';
+          
+          if ($type_contenu === 'video') {
+              if (empty($youtube_url)) {
+                  throw new Exception('Le lien YouTube est requis pour les vidéos.');
+              }
+              // Extract YouTube video ID
+              if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $youtube_url, $matches)) {
+                  $contenu = $matches[1]; // Store just the video ID
+              } else {
+                  throw new Exception('Le lien YouTube n\'est pas valide.');
+              }
+          } else if ($type_contenu === 'document') {
+              if (empty($drive_link)) {
+                  throw new Exception('Le lien Google Drive est requis pour les documents.');
+              }
+              $contenu = $drive_link;  // Store the Google Drive link
+          }
 
-            $enseignant = new Enseignant($_SESSION['user']['id']);
-            $courseId = $enseignant->ajouterCours(
-                $titre,
-                $description,
-                $contenu,
-                $type_contenu,
-                $id_categorie,
-                $selectedTags
-            );
+          $enseignant = new Enseignant($_SESSION['user']['id']);
+          $courseId = $enseignant->ajouterCours(
+              $titre,
+              $description,
+              $contenu,
+              $type_contenu,
+              $id_categorie,
+              $selectedTags
+          );
 
-            if ($courseId) {
-                $_SESSION['success_message'] = 'Le cours a été créé avec succès!';
-                header('Location: dashboard.php');
-                exit();
-            } else {
-                throw new Exception('Erreur lors de la création du cours.');
-            }
-        } catch (Exception $e) {
-            $error = 'Erreur: ' . $e->getMessage();
-        }
-    }
+          if ($courseId) {
+              $_SESSION['success_message'] = 'Le cours a été créé avec succès!';
+              header('Location: dashboard.php');
+              exit();
+          } else {
+              throw new Exception('Erreur lors de la création du cours.');
+          }
+      } catch (Exception $e) {
+          $error = 'Erreur: ' . $e->getMessage();
+      }
+  }
 }
+
 ?>
 
 <!DOCTYPE html>

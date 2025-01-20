@@ -93,7 +93,8 @@ try {
   $categories = Category::getAllCategoriesWithStats();
 
   // Get pending courses
-  $courseModel = new Course();
+  
+  $courseModel = new Course(null, null, null, null, null, null, null);
   $pendingCourses = $courseModel->getCoursesByStatus('en_attente');
 } catch (Exception $e) {
   die("Erreur: " . $e->getMessage());
@@ -141,7 +142,7 @@ if (isset($_SESSION['message'])) {
                 Tableau de Bord
               </a>
           
-              <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+              <a href="all_courses.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
                 <i class="fas fa-graduation-cap mr-2"></i>
                 Cours
               </a>
@@ -462,18 +463,14 @@ if (isset($_SESSION['message'])) {
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <form method="POST" action="update_course_status.php" class="inline-flex space-x-2">
-                          <input type="hidden" name="course_id" value="<?php echo $course['id']; ?>">
-                          <button type="submit" name="action" value="approve"
+                        <form action="all_courses.php" class="inline-flex space-x-2">
+                    
+                          <button  name="action" value="approve"
                             class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <i class="fas fa-check mr-2"></i>
-                            Approuver
+                            Voir 
                           </button>
-                          <button type="submit" name="action" value="reject"
-                            class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            <i class="fas fa-times mr-2"></i>
-                            Refuser
-                          </button>
+                        
                         </form>
                       </td>
                     </tr>

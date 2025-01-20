@@ -150,6 +150,19 @@ $coursePerformance = $enseignant->getCoursePerformance();
                         <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $activeCourses; ?></p>
                         <p class="text-sm text-gray-500 mt-2"><?php echo $draftCourses; ?> in draft</p>
                     </div>
+                    <!--  -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-green-50 text-green-600">
+                                    <i class="fas fa-book-open text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-sm font-medium text-gray-900">Cours en attente</h3>
+                                <p class="mt-1 text-2xl font-semibold text-green-600"><?php echo $activeCourses; ?></p>
+                            </div>
+                        </div>
                 </div>
             </main>
         </div>
