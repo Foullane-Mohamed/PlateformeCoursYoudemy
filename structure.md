@@ -34,7 +34,12 @@ youdemy/
 │   │   │   └── myCourses.php
 │   │   └── etudiant/
 │   │       ├── dashboard.php
+│   │       ├── aboutCours.php
 │   │       ├── users.php
+│   │       ├── allCourses.php
+│   │       ├── sinscrire.php
+│   │       ├── allCourses.php
+│   │       ├── course_details.php
 │   │       └── myCourses.php      
 │   │            
 │   └──index.php        

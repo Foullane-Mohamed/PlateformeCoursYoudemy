@@ -29,10 +29,11 @@ CREATE TABLE cours (
     type_contenu ENUM('video', 'document') NOT NULL,
     id_categorie INT,
     id_enseignant INT NOT NULL,
-    statut ENUM('actif', 'inactif', 'brouillon') NOT NULL DEFAULT 'brouillon',
+    statut ENUM('actif', 'en_attente', 'brouillon') NOT NULL DEFAULT 'brouillon',
     FOREIGN KEY (id_categorie) REFERENCES categories(id_categorie) ON DELETE SET NULL,
     FOREIGN KEY (id_enseignant) REFERENCES utilisateurs(id) ON DELETE CASCADE
 );
+SELECT * FROM cours;
 
 CREATE TABLE cours_tags (
     id_cours INT,

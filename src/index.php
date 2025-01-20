@@ -1,3 +1,32 @@
+<?php
+require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/models/User.php';
+require_once __DIR__ . '/models/Etudiant.php';
+require_once __DIR__ . '/models/Enseignant.php';
+require_once __DIR__ . '/models/Admin.php';
+require_once __DIR__ . '/models/Course.php';
+require_once __DIR__ . '/models/Category.php';
+require_once __DIR__ . '/models/Tag.php';
+require_once __DIR__ . '/models/Auth.php';
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header('Location: src/views/auth/login.php');
+    exit();
+}
+
+$user = $_SESSION['user'];
+
+if ($user['role'] === 'etudiant') {
+    header('Location: src/views/etudiant/dashboard.php');
+} elseif ($user['role'] === 'enseignant') {
+    header('Location: src/views/enseignant/dashboard.php');
+} elseif ($user['role'] === 'admin') {
+    header('Location: src/views/admin/dashboard.php');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full bg-gray-50">
 <head>

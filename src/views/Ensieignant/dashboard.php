@@ -14,6 +14,7 @@ $enseignantId = $_SESSION['user']['id'];
 // Fetch statistics
 $totalStudents = $enseignant->getTotalStudents();
 $activeCourses = $enseignant->getActiveCourses();
+$enAttenteCourses = $enseignant->getEnAttenteCourses(); // Fetch pending courses
 $draftCourses = $enseignant->getDraftCourses();
 $coursePerformance = $enseignant->getCoursePerformance();
 ?>
@@ -80,14 +81,9 @@ $coursePerformance = $enseignant->getCoursePerformance();
                             <i class="fas fa-plus-circle w-5 h-5"></i>
                             <span class="ml-3">Create Course</span>
                         </a>
-                    
                     </div>
                 </div>
-
-          
             </nav>
-
-          
         </aside>
 
         <!-- Main Content -->
@@ -100,16 +96,13 @@ $coursePerformance = $enseignant->getCoursePerformance();
                             <button class="lg:hidden text-gray-500 hover:text-gray-600">
                                 <i class="fas fa-bars text-xl"></i>
                             </button>
-                          
                         </div>
 
-                      
                         <div class="flex items-center gap-4">
-                    <a href="../auth/logout.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                        <i class="fas fa-sign-out-alt text-gray-600"></i>
-                        <span class="hidden sm:block font-medium text-sm text-gray-700">Logout</span>
-                    </a>
-              
+                            <a href="../auth/logout.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
+                                <i class="fas fa-sign-out-alt text-gray-600"></i>
+                                <span class="hidden sm:block font-medium text-sm text-gray-700">Logout</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -131,7 +124,6 @@ $coursePerformance = $enseignant->getCoursePerformance();
                             <div class="flex items-center justify-center w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg">
                                 <i class="fas fa-users text-xl"></i>
                             </div>
-                          
                         </div>
                         <h3 class="text-gray-900 font-semibold">Total Students</h3>
                         <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $totalStudents; ?></p>
@@ -144,25 +136,26 @@ $coursePerformance = $enseignant->getCoursePerformance();
                             <div class="flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-lg">
                                 <i class="fas fa-book text-xl"></i>
                             </div>
-                          
                         </div>
                         <h3 class="text-gray-900 font-semibold">Active Courses</h3>
                         <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $activeCourses; ?></p>
                         <p class="text-sm text-gray-500 mt-2"><?php echo $draftCourses; ?> in draft</p>
                     </div>
-                    <!--  -->
+
+                    <!-- Pending Courses -->
                     <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-green-50 text-green-600">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-green-50 text-yellow-600">
                                     <i class="fas fa-book-open text-xl"></i>
                                 </div>
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-sm font-medium text-gray-900">Cours en attente</h3>
-                                <p class="mt-1 text-2xl font-semibold text-green-600"><?php echo $activeCourses; ?></p>
+                                <p class="mt-1 text-2xl font-semibold text-yellow-600"><?php echo $enAttenteCourses; ?></p>
                             </div>
                         </div>
+                    </div>
                 </div>
             </main>
         </div>

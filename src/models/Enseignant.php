@@ -88,7 +88,20 @@ class Enseignant extends User
         return $result['draft_courses'] ?? 0;
     }
 
-  
+    public function getEnAttenteCourses()
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+    
+        $stmt = $conn->prepare("SELECT COUNT(*) AS en_attente_courses
+                               FROM cours
+                               WHERE id_enseignant = :id 
+                               AND statut = 'en_attente'");
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['en_attente_courses'] ?? 0;
+    }
 
     private function ajouterTagACours($idCours, $idTag)
     {

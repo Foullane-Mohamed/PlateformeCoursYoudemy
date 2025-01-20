@@ -9,7 +9,6 @@ class Category {
         $this->nom = $nom;
     }
 
-    // Add this method
     public static function getCategoryById($id) {
         $db = Database::getInstance();
         $conn = $db->getConnection();

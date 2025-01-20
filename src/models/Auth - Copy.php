@@ -31,7 +31,7 @@ class Auth
         $user = $userModel->login($email);
 
         if ($user && password_verify($password, $user['password'])) {
-            if ($user['status'] === 'actif' ||$user['role'] === 'etudiant'  ) {  
+            if ($user['status'] === 'actif' || $user['status'] === 'en_attente'  ) {  
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
                 }

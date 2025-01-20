@@ -1,102 +1,147 @@
 <?php
 session_start();
 require_once __DIR__ . '/../../models/Course.php';
-require_once __DIR__ . '/../../models/User.php';
+require_once __DIR__ . '/../../models/Etudiant.php';
 
-// تحقق من المصادقة
+// Vérification authentification
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'etudiant') {
     header('Location: ../auth/login.php');
     exit();
 }
 
-// تحقق من وجود معرف الدورة
-if (!isset($_GET['id'])) {
-    header('Location: dashboard.php');
+// Validation ID cours
+$courseId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$courseId) {
+    header('Location: allCourses.php');
     exit();
 }
 
-$courseId = $_GET['id'];
+// Récupération données
+$courseModel = new Course();
+$course = $courseModel->getCourseWithDetails($courseId);
 
-// استرداد تفاصيل الدورة
-$courseModel = new Course(null, null, null, null, null, null, null);
-$courseDetails = $courseModel->getCourseWithDetails($courseId);
+// Création de l'objet Etudiant avec les données de l'utilisateur
+$user = $_SESSION['user'];
+$etudiant = new Etudiant($user['nom'], $user['email'], $user['password'], $user['role'], $user['status']);
 
-if (!$courseDetails) {
-    die("Cours non trouvé.");
-}
+$isEnrolled = $courseModel->isEnrolled($_SESSION['user']['id'], $courseId);
 
-// استرداد بيانات المستخدم
-$userData = User::findById($_SESSION['user']['id']);
-if (!$userData) {
-    die("Utilisateur non trouvé.");
+// Gestion inscription
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isEnrolled) {
+    $result = $etudiant->inscriptionCours($_SESSION['user']['id'], $courseId);
+    
+    if ($result['success']) {
+        $_SESSION['success'] = $result['message'];
+        header('Refresh:0'); // Recharger la page
+        exit();
+    } else {
+        $_SESSION['error'] = $result['message'];
+    }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="fr" class="h-full bg-gray-50">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Cours - Youdemy</title>
+    <title><?= htmlspecialchars($course['titre']) ?> - Youdemy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="h-full">
-    <!-- Top Navigation -->
-    <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
-        <div class="px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Dashboard Button -->
-                <div class="flex items-center gap-4">
-                    <a href="dashboard.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                        <i class="fas fa-tachometer-alt text-gray-600"></i>
-                        <span class="hidden sm:block font-medium text-sm text-gray-700">Dashboard</span>
-                    </a>
-                </div>
-
-                <!-- Logout Button -->
-                <div class="flex items-center gap-4">
-                    <a href="../auth/logout.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                        <i class="fas fa-sign-out-alt text-gray-600"></i>
-                        <span class="hidden sm:block font-medium text-sm text-gray-700">Logout</span>
-                    </a>
-                </div>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="dashboard.php" class="text-2xl font-bold text-indigo-600">Youdemy</a>
+            <div class="flex items-center gap-4">
+                <a href="allCourses.php" class="hover:text-indigo-600">Catalogue</a>
+                <a href="../auth/logout.php" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Déconnexion</a>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Content -->
-    <div class="lg:pl-72 flex flex-col flex-1">
-        <!-- Page Content -->
-        <main class="flex-1 p-6">
-            <div class="bg-white p-6 rounded-xl shadow-sm">
-                <h1 class="text-2xl font-bold text-gray-900 mb-4"><?php echo htmlspecialchars($courseDetails['titre']); ?></h1>
-                <p class="text-sm text-gray-600 mb-4"><?php echo htmlspecialchars($courseDetails['description']); ?></p>
-                <p class="text-sm text-gray-500 mb-4">Enseignant: <?php echo htmlspecialchars($courseDetails['enseignant_nom']); ?></p>
-                <p class="text-sm text-gray-500 mb-4">Catégorie: <?php echo htmlspecialchars($courseDetails['category_name']); ?></p>
-                <p class="text-sm text-gray-500 mb-4">Tags: <?php echo htmlspecialchars($courseDetails['tags']); ?></p>
+    <!-- Contenu principal -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Messages flash -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
+                <?= $_SESSION['success'] ?>
+                <?php unset($_SESSION['success']) ?>
+            </div>
+        <?php endif; ?>
 
-                <!-- Display YouTube video or Google Drive link -->
-                <?php if ($courseDetails['type_contenu'] === 'video'): ?>
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+                <?= $_SESSION['error'] ?>
+                <?php unset($_SESSION['error']) ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Fiche cours -->
+        <div class="bg-white rounded-xl shadow-md p-8">
+            <h1 class="text-3xl font-bold mb-6"><?= htmlspecialchars($course['titre']) ?></h1>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">Description</h2>
+                    <p class="text-gray-600"><?= htmlspecialchars($course['description']) ?></p>
+                </div>
+                
+                <div>
                     <div class="mb-4">
-                        <h2 class="text-lg font-bold text-gray-900 mb-2">Vidéo du Cours</h2>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/<?php echo htmlspecialchars($courseDetails['contenu']); ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <h2 class="text-lg font-semibold mb-2">Enseignant</h2>
+                        <p><?= htmlspecialchars($course['enseignant_nom']) ?></p>
                     </div>
-                <?php elseif ($courseDetails['type_contenu'] === 'document'): ?>
+                    
                     <div class="mb-4">
-                        <h2 class="text-lg font-bold text-gray-900 mb-2">Document du Cours</h2>
-                        <a href="<?php echo htmlspecialchars($courseDetails['contenu']); ?>" target="_blank" class="text-indigo-600 hover:text-indigo-700">
-                            Lien Google Drive
+                        <h2 class="text-lg font-semibold mb-2">Statistiques</h2>
+                        <p><?= $course['nombre_etudiants'] ?> étudiants inscrits</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenu pédagogique -->
+            <div class="mb-8">
+                <?php if ($course['type_contenu'] === 'video'): ?>
+                    <div class="aspect-video bg-gray-200 rounded-xl overflow-hidden">
+                        <iframe 
+                            src="https://www.youtube.com/embed/<?= $course['contenu'] ?>"
+                            class="w-full h-full"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                <?php else: ?>
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <a 
+                            href="<?= $course['contenu'] ?>" 
+                            class="text-indigo-600 hover:underline flex items-center gap-2"
+                            target="_blank"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Télécharger les ressources du cours
                         </a>
                     </div>
                 <?php endif; ?>
-
-                <!-- Back to Dashboard -->
-                <a href="dashboard.php" class="mt-4 inline-block bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
-                    Retour au Dashboard
-                </a>
             </div>
-        </main>
-    </div>
+
+            <!-- Bouton d'inscription -->
+            <?php if ($isEnrolled): ?>
+                <div class="p-4 bg-green-100 text-green-700 rounded-lg text-center">
+                    Vous êtes déjà inscrit à ce cours
+                </div>
+            <?php else: ?>
+              <form method="POST">
+    <input type="hidden" name="course_id" value="<?= $course['id'] ?>">
+    <button 
+        type="submit"
+        class="w-full bg-indigo-600 text-white py-4 rounded-xl hover:bg-indigo-700 transition-colors"
+    >
+        S'inscrire maintenant
+    </button>
+</form>
+            <?php endif; ?>
+        </div>
+    </main>
 </body>
 </html>
