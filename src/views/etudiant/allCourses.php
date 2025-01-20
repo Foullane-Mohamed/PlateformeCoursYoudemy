@@ -1,3 +1,36 @@
+<?php
+session_start();
+require_once __DIR__ . '/../../models/Course.php';
+require_once __DIR__ . '/../../models/User.php';
+
+// تحقق من المصادقة
+// if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'etudiant') {
+//     header('Location: ../auth/login.php');
+//     exit();
+// }
+
+// تحقق من وجود معرف الدورة
+// if (!isset($_GET['id'])) {
+//     header('Location: dashboard.php');
+//     exit();
+// }
+
+
+
+
+$courseModel = new Course(null, null, null, null, null, null, null);
+$courseDetails = $courseModel->getAllCours();
+
+if (!$courseDetails) {
+    die("Cours non trouvé.");
+}
+
+
+$userData = User::findById($_SESSION['user']['id']);
+if (!$userData) {
+    die("Utilisateur non trouvé.");
+}
+?>
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
 <head>
@@ -66,170 +99,38 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-            <!-- Page Header -->
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Catalogue des Cours</h1>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Explorez une variété de cours de haute qualité et développez vos compétences dans différents domaines.</p>
-            </div>
+        <div class="lg:pl-72 flex flex-col flex-1">
+        <!-- Page Content -->
+        <main class="flex-1 p-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h1 class="text-2xl font-bold text-gray-900 mb-4"><?php echo htmlspecialchars($courseDetails['titre']); ?></h1>
+                <p class="text-sm text-gray-600 mb-4"><?php echo htmlspecialchars($courseDetails['description']); ?></p>
 
-            <!-- Filters -->
-            <div class="mb-10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <div class="flex space-x-4 w-full md:w-auto">
-                    <select class="flex-grow md:w-auto bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option>Toutes les Catégories</option>
-                        <option>Développement Web</option>
-                        <option>Data Science</option>
-                        <option>Design</option>
-                    </select>
-                    <select class="flex-grow md:w-auto bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option>Tous Niveaux</option>
-                        <option>Débutant</option>
-                        <option>Intermédiaire</option>
-                        <option>Avancé</option>
-                    </select>
-                </div>
-                <select class="w-full md:w-auto bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option>Trier par</option>
-                    <option>Les plus populaires</option>
-                    <option>Mieux notés</option>
-                    <option>Nouveautés</option>
-                    <option>Prix croissant</option>
-                    <option>Prix décroissant</option>
-                </select>
-            </div>
+                <p class="text-sm text-gray-500 mb-4">Catégorie: <?php echo htmlspecialchars($courseDetails['nom.categories']); ?></p>
+                <p class="text-sm text-gray-500 mb-4">Tags: <?php echo htmlspecialchars($courseDetails['nom.tags']); ?></p>
 
-            <!-- Courses Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Course Card Template -->
-                <div class="course-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <div class="relative">
-                        <img src="https://ui-avatars.com/api/?name=Cours+Web" alt="Course" class="w-full h-56 object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="badge-gradient text-white px-3 py-1 rounded-full text-xs font-semibold">
-                                Développement
-                            </span>
-                        </div>
+                <!-- Display YouTube video or Google Drive link -->
+                <?php if ($courseDetails['contenu'] === 'video'): ?>
+                    <div class="mb-4">
+                        <h2 class="text-lg font-bold text-gray-900 mb-2">Vidéo du Cours</h2>
+                        <iframe width="560" height="315" src="https://www.youtube.com/<?php echo htmlspecialchars($courseDetails['contenu']); ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Développement Web Complet</h3>
-                        <p class="text-gray-600 mb-4 h-12 overflow-hidden">
-                            Maîtrisez le développement web moderne de A à Z avec HTML, CSS, JavaScript et React
-                        </p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <img src="https://ui-avatars.com/api/?name=John+Doe" class="w-10 h-10 rounded-full mr-3" alt="Instructeur">
-                                <div>
-                                    <p class="text-sm font-semibold text-gray-800">John Doe</p>
-                                    <p class="text-xs text-gray-500">Expert Web</p>
-                                </div>
-                            </div>
-                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-medium">
-                                Débutant
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
-                            <span class="text-xl font-bold text-indigo-600">49,99 €</span>
-                            <button class="custom-gradient text-white px-5 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity">
-                                Détails du Cours
-                            </button>
-                        </div>
+                <?php elseif ($courseDetails['description'] === 'document'): ?>
+                    <div class="mb-4">
+                        <h2 class="text-lg font-bold text-gray-900 mb-2">Document du Cours</h2>
+                        <a href="<?php echo htmlspecialchars($courseDetails['contenu']); ?>" target="_blank" class="text-indigo-600 hover:text-indigo-700">
+                            Lien Google Drive
+                        </a>
                     </div>
-                </div>
+                <?php endif; ?>
 
-                <!-- Repeat similar structure for other course cards -->
-                <div class="course-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <div class="relative">
-                        <img src="https://ui-avatars.com/api/?name=Data+Science" alt="Course" class="w-full h-56 object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="badge-gradient text-white px-3 py-1 rounded-full text-xs font-semibold">
-                                Data Science
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Python pour Data Science</h3>
-                        <p class="text-gray-600 mb-4 h-12 overflow-hidden">
-                            Apprenez l'analyse de données, le machine learning et la visualisation avec Python
-                        </p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <img src="https://ui-avatars.com/api/?name=Sarah+Smith" class="w-10 h-10 rounded-full mr-3" alt="Instructeur">
-                                <div>
-                                    <p class="text-sm font-semibold text-gray-800">Sarah Smith</p>
-                                    <p class="text-xs text-gray-500">Data Scientist</p>
-                                </div>
-                            </div>
-                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-medium">
-                                Intermédiaire
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
-                            <span class="text-xl font-bold text-indigo-600">59,99 €</span>
-                            <button class="custom-gradient text-white px-5 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity">
-                                Détails du Cours
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <div class="relative">
-                        <img src="https://ui-avatars.com/api/?name=React" alt="Course" class="w-full h-56 object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="badge-gradient text-white px-3 py-1 rounded-full text-xs font-semibold">
-                                Frontend
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Développement React Moderne</h3>
-                        <p class="text-gray-600 mb-4 h-12 overflow-hidden">
-                            Créez des applications web dynamiques et performantes avec React et ses écosystèmes
-                        </p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center">
-                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson" class="w-10 h-10 rounded-full mr-3" alt="Instructeur">
-                                <div>
-                                    <p class="text-sm font-semibold text-gray-800">Mike Johnson</p>
-                                    <p class="text-xs text-gray-500">Expert Frontend</p>
-                                </div>
-                            </div>
-                            <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-medium">
-                                Avancé
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between border-t border-gray-200 pt-4">
-                            <span class="text-xl font-bold text-indigo-600">54,99 €</span>
-                            <button class="custom-gradient text-white px-5 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity">
-                                Détails du Cours
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="flex justify-center mt-12">
-                <nav aria-label="Page navigation" class="inline-flex space-x-2">
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
-                        Précédent
-                    </button>
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
-                        1
-                    </button>
-                    <button class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg border border-indigo-600">
-                        2
-                    </button>
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
-                        3
-                    </button>
-                    <button class="px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
-                        Suivant
-                    </button>
-                </nav>
+                <!-- Back to Dashboard -->
+                <a href="dashboard.php" class="mt-4 inline-block bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
+                    Retour au Dashboard
+                </a>
             </div>
         </main>
+    </div>
 
         <!-- Footer -->
         <footer class="bg-white border-t border-gray-200">

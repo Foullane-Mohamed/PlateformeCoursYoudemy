@@ -91,6 +91,10 @@ try {
   });
 
   $categories = Category::getAllCategoriesWithStats();
+
+  // Get pending courses
+  $courseModel = new Course();
+  $pendingCourses = $courseModel->getCoursesByStatus('en_attente');
 } catch (Exception $e) {
   die("Erreur: " . $e->getMessage());
 }
@@ -397,6 +401,69 @@ if (isset($_SESSION['message'])) {
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <form method="POST" action="validate_teacher.php" class="inline-flex space-x-2">
                           <input type="hidden" name="teacher_id" value="<?php echo $teacher['id']; ?>">
+                          <button type="submit" name="action" value="approve"
+                            class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <i class="fas fa-check mr-2"></i>
+                            Approuver
+                          </button>
+                          <button type="submit" name="action" value="reject"
+                            class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            <i class="fas fa-times mr-2"></i>
+                            Refuser
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section des cours en attente -->
+      <div class="mt-8">
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+            <div class="flex items-center">
+              <i class="fas fa-book text-blue-500 text-xl mr-3"></i>
+              <h3 class="text-lg leading-6 font-medium text-gray-900">Cours En Attente</h3>
+            </div>
+            <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+              <?php echo count($pendingCourses); ?> en attente
+            </span>
+          </div>
+          <div class="border-t border-gray-200">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enseignant</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <?php foreach ($pendingCourses as $course): ?>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                          <?php echo htmlspecialchars($course['titre']); ?>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900"><?php echo htmlspecialchars($course['enseignant_nom']); ?></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          <?php echo $course['statut']; ?>
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <form method="POST" action="update_course_status.php" class="inline-flex space-x-2">
+                          <input type="hidden" name="course_id" value="<?php echo $course['id']; ?>">
                           <button type="submit" name="action" value="approve"
                             class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <i class="fas fa-check mr-2"></i>

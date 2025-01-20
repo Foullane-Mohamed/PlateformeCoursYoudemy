@@ -62,7 +62,8 @@ CREATE TABLE certificats (
     FOREIGN KEY (id_cours) REFERENCES cours(id) ON DELETE CASCADE,
     UNIQUE KEY unique_certificat (id_etudiant, id_cours)
 );
-SELECT * from utilisateurs ; 
+SELECT * from cours ; 
+
 INSERT INTO utilisateurs (nom, email, password, role, status) 
 VALUES (
     'admin', 
@@ -114,7 +115,7 @@ VALUES
 ('Programming'), 
 ('Design'), 
 ('Marketing');
-
+ SELECT * from cours;
 -- Insert tags
 INSERT INTO tags (nom) 
 VALUES 
@@ -126,7 +127,7 @@ VALUES
 -- Insert courses
 INSERT INTO cours (titre, description, contenu, type_contenu, id_categorie, id_enseignant, statut) 
 VALUES 
-('Learn C++', 'A comprehensive guide to C++ programming.', 'C++ Course Content', 'video', 1, 3, 'actif'),
+('Learn C++', 'A comprehensive guide to C++ programming.', 'C++ Course Content', 'video', 1, 3, 'inactif'),
 ('Web Design Basics', 'Introduction to web design principles.', 'Web Design Course Content', 'document', 2, 4, 'actif'),
 ('SEO Fundamentals', 'Master SEO strategies for online success.', 'SEO Course Content', 'video', 3, 3, 'brouillon');
 

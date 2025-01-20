@@ -1,22 +1,53 @@
 <?php
 session_start();
-require_once __DIR__ . '/../../models/User.php';  // تحميل الكلاس User
-require_once __DIR__ . '/../../models/Enseignant.php';  // تحميل الكلاس Enseignant
+require_once __DIR__ . '/../../models/User.php';
+require_once __DIR__ . '/../../models/Etudiant.php';
+require_once __DIR__ . '/../../models/Course.php';
+require_once __DIR__ . '/../../models/Inscription.php';
 
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'enseignant') {
+// تحقق من المصادقة
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'etudiant') {
     header('Location: ../auth/login.php');
     exit();
 }
 
-// إنشاء كائن Enseignant باستخدام المعرف
-$enseignantId = $_SESSION['user']['id'];
-$enseignant = new Enseignant($enseignantId);
+// إنشاء كائن Etudiant باستخدام المعرف
+$etudiantId = $_SESSION['user']['id'];
 
-// Récupérer les statistiques des cours de l'enseignant
-$totalStudents = $enseignant->getTotalStudents();
-$activeCourses = $enseignant->getActiveCourses();
-$draftCourses = $enseignant->getDraftCourses();
-$coursePerformance = $enseignant->getCoursePerformance();
+// استرداد بيانات المستخدم من قاعدة البيانات
+$userData = User::findById($etudiantId);
+
+if (!$userData) {
+    die("Utilisateur non trouvé.");
+}
+
+$etudiant = new Etudiant(
+    $userData['nom'],
+    $userData['email'],
+    $userData['password'],
+    $userData['role'],
+    $userData['status']
+);
+
+$courseModel = new Course(null, null, null, null, null, null, null);
+
+$courses = $courseModel->getAllCoursesWithDetails();
+
+$mesCours = $etudiant->getMesCours();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['inscription'])) {
+    $courseId = $_POST['course_id'];
+    $result = $etudiant->inscriptionCours($courseId);
+
+    if ($result['success']) {
+        $_SESSION['success_message'] = $result['message'];
+    } else {
+        $_SESSION['error_message'] = $result['message'];
+    }
+
+    header('Location: dashboard.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +55,7 @@ $coursePerformance = $enseignant->getCoursePerformance();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youdemy Teacher Dashboard</title>
+    <title>Youdemy Student Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -48,7 +79,7 @@ $coursePerformance = $enseignant->getCoursePerformance();
             <div class="flex items-center h-16 px-6 border-b border-gray-200 bg-white">
                 <div class="flex items-center gap-2">
                     <div class="bg-indigo-600 p-2 rounded-lg">
-                        <i class="fas fa-chalkboard-teacher text-white"></i>
+                        <i class="fas fa-user-graduate text-white"></i>
                     </div>
                     <span class="text-xl font-bold text-gray-900">Youdemy</span>
                 </div>
@@ -63,18 +94,14 @@ $coursePerformance = $enseignant->getCoursePerformance();
                             <i class="fas fa-chart-line w-5 h-5"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
+                        <a href="course_details" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
                             <i class="fas fa-book w-5 h-5"></i>
-                            <span class="ml-3">My Courses</span>
-                        </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-users w-5 h-5"></i>
-                            <span class="ml-3">Students</span>
+                            <span class="ml-3">Mes Cours</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- إضافة زر تسجيل الخروج هنا -->
+                <!-- Logout Button -->
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Account</h3>
                     <div class="mt-4 space-y-1">
@@ -105,11 +132,11 @@ $coursePerformance = $enseignant->getCoursePerformance();
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <button class="relative p-2 text-gray-400 hover:text-gray-500">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+                        
+                              
+                              
                             </button>
-                            <!-- إضافة زر تسجيل الخروج هنا -->
+                            <!-- Logout Button -->
                             <a href="../auth/logout.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
                                 <i class="fas fa-sign-out-alt text-gray-600"></i>
                                 <span class="hidden sm:block font-medium text-sm text-gray-700">Logout</span>
@@ -123,70 +150,63 @@ $coursePerformance = $enseignant->getCoursePerformance();
             <main class="flex-1 p-6">
                 <!-- Welcome Section -->
                 <div class="mb-8">
-                    <h1 class="text-2xl font-bold text-gray-900">Teacher Dashboard</h1>
-                    <p class="mt-2 text-sm text-gray-600">Monitor your courses and student engagement.</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Student Dashboard</h1>
+                    <p class="mt-2 text-sm text-gray-600">Explore courses and manage your learning journey.</p>
                 </div>
 
-                <!-- Stats Grid -->
-                <div class="stats-grid mb-8">
-                    <!-- Total Students -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center justify-center w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg">
-                                <i class="fas fa-users text-xl"></i>
-                            </div>
-                            <span class="flex items-center text-green-600 text-sm font-medium">
-                                <i class="fas fa-arrow-up mr-1 text-xs"></i>
-                                15%
-                            </span>
-                        </div>
-                        <h3 class="text-gray-900 font-semibold">Total Students</h3>
-                        <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $totalStudents; ?></p>
-                        <p class="text-sm text-gray-500 mt-2">+56 this month</p>
+                <!-- Display success or error messages -->
+                <?php if (isset($_SESSION['success_message'])): ?>
+                    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                        <?php echo htmlspecialchars($_SESSION['success_message']); ?>
+                        <?php unset($_SESSION['success_message']); ?>
                     </div>
+                <?php endif; ?>
 
-                    <!-- Active Courses -->
-                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-lg">
-                                <i class="fas fa-book text-xl"></i>
+                <?php if (isset($_SESSION['error_message'])): ?>
+                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                        <?php echo htmlspecialchars($_SESSION['error_message']); ?>
+                        <?php unset($_SESSION['error_message']); ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Catalogue des Cours -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Catalogue des Cours</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <?php foreach ($courses as $course): ?>
+                            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
+                                <h3 class="text-lg font-bold text-gray-900"><?php echo htmlspecialchars($course['titre']); ?></h3>
+                                <p class="text-sm text-gray-600 mt-2"><?php echo htmlspecialchars($course['description']); ?></p>
+                                <p class="text-sm text-gray-500 mt-2">Enseignant: <?php echo htmlspecialchars($course['enseignant_nom']); ?></p>
+                                <p class="text-sm text-gray-500 mt-2">Étudiants inscrits: <?php echo htmlspecialchars($course['nombre_etudiants']); ?></p>
+                                <form action="dashboard.php" method="POST" class="mt-4">
+                                    <input type="hidden" name="course_id" value="<?php echo htmlspecialchars($course['id']); ?>">
+                                    <button type="submit" name="inscription" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
+                                        S'inscrire
+                                    </button>
+                                  
+                                
+                                </form>
                             </div>
-                            <span class="flex items-center text-green-600 text-sm font-medium">
-                                <i class="fas fa-arrow-up mr-1 text-xs"></i>
-                                8%
-                            </span>
-                        </div>
-                        <h3 class="text-gray-900 font-semibold">Active Courses</h3>
-                        <p class="text-3xl font-bold text-gray-900 mt-2"><?php echo $activeCourses; ?></p>
-                        <p class="text-sm text-gray-500 mt-2"><?php echo $draftCourses; ?> in draft</p>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Course Performance -->
-                    <div class="bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-bold text-gray-900">Course Performance</h2>
-                            <select class="text-sm text-gray-500 border border-gray-300 rounded-lg px-3 py-1.5">
-                                <option>Last 7 days</option>
-                                <option>Last 30 days</option>
-                                <option>Last 3 months</option>
-                            </select>
-                        </div>
-                        <div class="space-y-4">
-                            <!-- Course Item -->
-                            <?php foreach ($coursePerformance as $course): ?>
-                                <div class="p-4 hover:bg-gray-50 rounded-lg">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <h3 class="font-medium text-gray-900"><?php echo $course['titre']; ?></h3>
-                                            <p class="text-sm text-gray-500 mt-1"><?php echo $course['nombre_etudiants']; ?> students</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                <!-- Mes Cours -->
+                <div id="mes-cours" class="mb-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Mes Cours</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <?php foreach ($mesCours as $course): ?>
+                            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
+                                <h3 class="text-lg font-bold text-gray-900"><?php echo htmlspecialchars($course['titre']); ?></h3>
+                                <p class="text-sm text-gray-600 mt-2"><?php echo htmlspecialchars($course['description']); ?></p>
+                                <p class="text-sm text-gray-500 mt-2">Enseignant: <?php echo htmlspecialchars($course['enseignant_nom']); ?></p>
+                                <!-- Add a button to view course details -->
+                                <a href="course_details.php?id=<?php echo htmlspecialchars($course['id']); ?>" class="mt-4 inline-block w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 text-center">
+                                    Voir les détails
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </main>

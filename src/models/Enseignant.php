@@ -97,7 +97,7 @@ class Enseignant extends User
             // Begin transaction
             $conn->beginTransaction();
 
-            $cours = new Course($titre, $description, $contenu, $type_contenu, $id_categorie, $this->id, 'actif');
+            $cours = new Course($titre, $description, $contenu, $type_contenu, $id_categorie, $this->id, 'en_attente');
             $coursId = $cours->create();
 
             // Add tags

@@ -19,6 +19,17 @@ class User
         $this->status = $status;
     }
 
+    public static function findById($id)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("SELECT * FROM utilisateurs WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function register()
     {
         $db = Database::getInstance();

@@ -1,57 +1,24 @@
 <?php
-require_once 'connection.php';
-require_once 'User.php';
+require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/User.php';
+require_once __DIR__ . '/Inscription.php';
 
 class Etudiant extends User
 {
+    public function __construct($nom, $email, $password, $role, $status)
+    {
+        parent::__construct($nom, $email, $password, $role, $status);
+    }
+
     public function inscriptionCours($idCours)
     {
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO inscriptions (id_etudiant, id_cours, date_inscription) VALUES (:id_etudiant, :id_cours, NOW())");
-        $stmt->bindParam(':id_etudiant', $this->id);
-        $stmt->bindParam(':id_cours', $idCours);
-        $stmt->execute();
+        $inscription = new Inscription($this->id, $idCours);
+        return $inscription->inscriptionCours();
     }
 
     public function getMesCours()
     {
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT c.* 
-                              FROM inscriptions i
-                              JOIN cours c ON i.id_cours = c.id
-                              WHERE i.id_etudiant = :id_etudiant");
-        $stmt->bindParam(':id_etudiant', $this->id);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getEvaluationsCours($idCours)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM evaluations WHERE id_etudiant = :id_etudiant AND id_cours = :id_cours");
-        $stmt->bindParam(':id_etudiant', $this->id);
-        $stmt->bindParam(':id_cours', $idCours);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function ajouterEvaluation($idCours, $note, $commentaire)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO evaluations (id_cours, id_etudiant, note, commentaire) VALUES (:id_cours, :id_etudiant, :note, :commentaire)");
-        $stmt->bindParam(':id_cours', $idCours);
-        $stmt->bindParam(':id_etudiant', $this->id);
-        $stmt->bindParam(':note', $note);
-        $stmt->bindParam(':commentaire', $commentaire);
-        $stmt->execute();
-    }
-
-    public function obtenirCertificat($idCours)
-    {
-        global $pdo;
-        $stmt = $pdo->prepare("INSERT INTO certificats (id_etudiant, id_cours, date_obtention) VALUES (:id_etudiant, :id_cours, NOW())");
-        $stmt->bindParam(':id_etudiant', $this->id);
-        $stmt->bindParam(':id_cours', $idCours);
-        $stmt->execute();
+        $inscription = new Inscription();
+        return $inscription->getCoursesByStudent($this->id);
     }
 }
