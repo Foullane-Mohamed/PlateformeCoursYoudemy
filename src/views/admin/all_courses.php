@@ -73,11 +73,11 @@ if (isset($_SESSION['message'])) {
 
 <body class="h-full">
   <div class="min-h-full">
-    <!-- Navigation -->
+  
     <nav class="bg-white border-b border-gray-200 fixed w-full z-30 top-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-          <!-- Logo et liens de navigation -->
+        
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
               <h2 class="text-xl ">Youdemy</h2>
@@ -100,13 +100,13 @@ if (isset($_SESSION['message'])) {
             </div>
           </div>
 
-          <!-- Section droite avec recherche, notifications et profil -->
+    
           <div class="hidden sm:ml-6 sm:flex sm:items-center">
         
 
           
 
-            <!-- Menu profil -->
+      
             <div class="ml-3 relative">
               <div class="flex items-center">
                 <button type="button" class="bg-white flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 items-center" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleProfileDropdown()">
@@ -116,13 +116,9 @@ if (isset($_SESSION['message'])) {
                   <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
                 </button>
               </div>
-              <!-- Menu déroulant du profil -->
+          
               <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu">
-                <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                  <i class="fas fa-user mr-2"></i>
-                  Mon Profil
-                </a>
-               -->
+            
                 <hr class="my-1">
                                   <a href="../auth/logout.php" class="block px-4 py-2 text-sm text-red-700 hover:bg-red-50" role="menuitem" onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
                       <i class="fas fa-sign-out-alt mr-2"></i>
@@ -131,8 +127,6 @@ if (isset($_SESSION['message'])) {
               </div>
             </div>
           </div>
-
-          <!-- Bouton menu mobile -->
           <div class="flex items-center sm:hidden">
             <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()">
               <span class="sr-only">Open main menu</span>
@@ -142,7 +136,7 @@ if (isset($_SESSION['message'])) {
         </div>
       </div>
 
-      <!-- Menu mobile -->
+  
       <div class="sm:hidden hidden" id="mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
           <a href="dashboard.php" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
@@ -184,23 +178,23 @@ if (isset($_SESSION['message'])) {
       </div>
     </nav>
 
-<!-- En-tête -->
+
 <header class="bg-white shadow mt-16">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold text-gray-900">Tous les Cours</h1>
       </div>
     </header>
 
-    <!-- Contenu principal -->
+
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <!-- Alert Message -->
+  
       <?php if ($message): ?>
         <div class="mb-4 rounded-md p-4 <?php echo $messageType === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'; ?>">
           <?php echo htmlspecialchars($message); ?>
         </div>
       <?php endif; ?>
 
-      <!-- Section des cours -->
+  
       <div class="mt-8">
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
@@ -257,11 +251,7 @@ if (isset($_SESSION['message'])) {
         Désactiver
     </button>
     
-    <!-- <button type="submit" name="status" value="brouillon"
-        class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-        <i class="fas fa-pencil-alt mr-2"></i>
-        Brouillon
-    </button> -->
+
 </form>
                       </td>
                     </tr>
@@ -296,16 +286,16 @@ if (isset($_SESSION['message'])) {
       }
     });
 
-    // Search functionality
+
     const searchInput = document.getElementById('search');
     if (searchInput) {
       searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase();
-        // Add your search logic here
+  
       });
     }
 
-  // Add smooth transition for alerts
+
   const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
       setTimeout(() => {

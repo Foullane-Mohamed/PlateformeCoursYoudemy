@@ -11,8 +11,18 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'etudiant') {
 $search = filter_input(INPUT_GET, 'search', FILTER_DEFAULT);
 $categoryId = filter_input(INPUT_GET, 'category_id', FILTER_VALIDATE_INT);
 
+$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, ['options' => ['default' => 1, 'min_range' => 1]]);
+$limit = 6; // عدد العناصر في كل صفحة
+$offset = ($page - 1) * $limit;
+
 $courseModel = new Course();
-$courses = $courseModel->getAllCoursesWithDetails($categoryId, $search);
+$courses = $courseModel->getPaginatedCoursesWithDetails($categoryId, $search, $limit, $offset);
+
+// حساب عدد الصفحات
+$allCourses = $courseModel->getAllCoursesWithDetails($categoryId, $search); // استدعاء الوظيفة الأصلية
+$totalCourses = count($allCourses); // عدد الكورسات الكلي
+$totalPages = ceil($totalCourses / $limit); // عدد الصفحات
+
 $categories = $courseModel->getAllCategories();
 ?>
 
@@ -59,43 +69,6 @@ $categories = $courseModel->getAllCategories();
             <p class="text-gray-600">Découvrez notre sélection de cours et commencez votre apprentissage</p>
         </div>
 
-    <!-- Formulaire de recherche -->
-<form method="GET" action="" class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mb-8">
-    <div class="flex flex-col md:flex-row gap-4">
-        <input 
-            type="text" 
-            name="search" 
-            placeholder="Rechercher un cours..." 
-            class="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
-            value="<?= isset($search) ? htmlspecialchars($search) : '' ?>"
-        >
-        <select 
-            name="category_id" 
-            class="w-full md:w-64 px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
-        >
-            <option value="">Toutes catégories</option>
-            <?php if (isset($categories) && is_array($categories)): ?>
-                <?php foreach ($categories as $cat): ?>
-                    <option 
-                        value="<?= $cat['id_categorie'] ?>"
-                        <?= (isset($categoryId) && $cat['id_categorie'] == $categoryId) ? 'selected' : '' ?>
-                    >
-                        <?= htmlspecialchars($cat['nom']) ?>
-                    </option>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </select>
-        <button type="submit" class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300">
-            <span class="flex items-center justify-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                Rechercher
-            </span>
-        </button>
-    </div>
-</form>
-
         <!-- Liste des cours -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($courses as $course): ?>
@@ -120,6 +93,32 @@ $categories = $courseModel->getAllCategories();
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-12">
+            <nav class="inline-flex rounded-md shadow-sm">
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?= $page - 1 ?>&category_id=<?= $categoryId ?>&search=<?= $search ?>" 
+                       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50">
+                        Précédent
+                    </a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?= $i ?>&category_id=<?= $categoryId ?>&search=<?= $search ?>" 
+                       class="<?= $i == $page ? 'bg-indigo-50 text-indigo-600' : 'bg-white text-gray-700' ?> px-4 py-2 text-sm font-medium border border-gray-300 hover:bg-gray-50">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="?page=<?= $page + 1 ?>&category_id=<?= $categoryId ?>&search=<?= $search ?>" 
+                       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50">
+                        Suivant
+                    </a>
+                <?php endif; ?>
+            </nav>
         </div>
     </main>
 </body>

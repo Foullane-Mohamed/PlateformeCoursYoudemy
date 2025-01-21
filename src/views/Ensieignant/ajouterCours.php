@@ -11,7 +11,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'enseignant') {
     exit();
 }
 
-// Initialize models
 $courseModel = new Course(null, null, null, null, null, null, null);
 $categories = $courseModel->getAllCategories();
 $tagModel = new Tag();
@@ -21,7 +20,6 @@ $message = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Validate and sanitize input
   $titre = trim($_POST['titre'] ?? '');
   $description = trim($_POST['description'] ?? '');
   $type_contenu = trim($_POST['type_contenu'] ?? '');
@@ -30,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $youtube_url = trim($_POST['youtube_url'] ?? '');
   $drive_link = trim($_POST['drive_link'] ?? '');
 
-  // Basic validation
   if (!$titre || !$description || !$type_contenu || !$id_categorie || empty($selectedTags)) {
       $error = 'Veuillez remplir tous les champs obligatoires.';
   } else {
@@ -41,9 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               if (empty($youtube_url)) {
                   throw new Exception('Le lien YouTube est requis pour les vidéos.');
               }
-              // Extract YouTube video ID
               if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $youtube_url, $matches)) {
-                  $contenu = $matches[1]; // Store just the video ID
+                  $contenu = $matches[1]; 
               } else {
                   throw new Exception('Le lien YouTube n\'est pas valide.');
               }
@@ -51,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               if (empty($drive_link)) {
                   throw new Exception('Le lien Google Drive est requis pour les documents.');
               }
-              $contenu = $drive_link;  // Store the Google Drive link
+              $contenu = $drive_link;  
           }
 
           $enseignant = new Enseignant($_SESSION['user']['id']);
@@ -92,11 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body class="h-full">
-    <!-- Top Navigation -->
     <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
         <div class="px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center justify-between">
-                <!-- Dashboard Button -->
                 <div class="flex items-center gap-4">
                     <a href="dashboard.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-tachometer-alt text-gray-600"></i>
@@ -104,7 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </a>
                 </div>
 
-                <!-- Logout Button -->
                 <div class="flex items-center gap-4">
                     <a href="../auth/logout.php" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-sign-out-alt text-gray-600"></i>
@@ -115,9 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-    <!-- Main Content -->
     <div class="lg:pl-72 flex flex-col flex-1">
-        <!-- Page Content -->
         <main class="flex-1 p-6">
             <?php if ($error): ?>
                 <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -133,21 +124,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form action="ajouterCours.php" method="POST" class="bg-white p-6 rounded-xl shadow-sm">
                 <div class="space-y-6">
-                    <!-- Titre -->
                     <div>
                         <label for="titre" class="block text-sm font-medium text-gray-700">Titre du cours</label>
                         <input type="text" id="titre" name="titre" required
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
-                    <!-- Description -->
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                         <textarea id="description" name="description" rows="4" required
                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
 
-                    <!-- Type de contenu -->
                     <div>
                         <label for="type_contenu" class="block text-sm font-medium text-gray-700">Type de contenu</label>
                         <select id="type_contenu" name="type_contenu" required
@@ -157,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
 
-                    <!-- YouTube URL field -->
                     <div id="youtube_url_field">
                         <label for="youtube_url" class="block text-sm font-medium text-gray-700">Lien YouTube</label>
                         <input type="url" id="youtube_url" name="youtube_url"
@@ -166,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="mt-1 text-sm text-gray-500">Collez le lien de votre vidéo YouTube ici</p>
                     </div>
 
-                    <!-- Google Drive link field -->
                     <div id="drive_link_field" style="display: none;">
                         <label for="drive_link" class="block text-sm font-medium text-gray-700">Lien Google Drive</label>
                         <input type="url" id="drive_link" name="drive_link"
@@ -175,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="mt-1 text-sm text-gray-500">Collez le lien de votre document Google Drive ici</p>
                     </div>
 
-                    <!-- Catégorie -->
                     <div>
                         <label for="id_categorie" class="block text-sm font-medium text-gray-700">Catégorie</label>
                         <select id="id_categorie" name="id_categorie" required
@@ -188,7 +173,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
 
-                    <!-- Tags -->
                     <div>
                         <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
                         <select id="tags" name="tags[]" multiple required
@@ -201,7 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
 
-                    <!-- Submit Button -->
                     <div>
                         <button type="submit"
                                 class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -215,13 +198,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for tags
             $('#tags').select2({
                 placeholder: 'Sélectionnez les tags',
                 allowClear: true
             });
 
-            // Toggle fields based on content type
             $('#type_contenu').change(function() {
                 const contentType = $(this).val();
                 if (contentType === 'video') {
@@ -237,7 +218,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             });
 
-            // Trigger change event to set initial state
             $('#type_contenu').trigger('change');
         });
     </script>

@@ -14,7 +14,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 $message = '';
 $messageType = '';
 
-// Handle category form submissions
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   $admin = new Admin($_SESSION['user']['nom'], $_SESSION['user']['email'], '', 'admin', 'actif');
   switch ($_POST['action']) {
@@ -92,7 +92,7 @@ try {
 
   $categories = Category::getAllCategoriesWithStats();
 
-  // Get pending courses
+
   
   $courseModel = new Course(null, null, null, null, null, null, null);
   $pendingCourses = $courseModel->getCoursesByStatus('en_attente');

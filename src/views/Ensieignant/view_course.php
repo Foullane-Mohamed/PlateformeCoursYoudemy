@@ -21,7 +21,7 @@ $enseignant = new Enseignant($_SESSION['user']['id']);
 $courseModel = new Course(null, null, null, null, null, null, null);
 
 // Récupérer les détails du cours
-$course = $courseModel->getCourseWithDetails($courseId);
+$course = $courseModel->getCourseAllStatus($courseId);
 if (!$course) {
     header('Location: myCourses.php');
     exit();

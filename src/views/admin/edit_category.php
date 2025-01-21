@@ -14,12 +14,12 @@ $message = '';
 $messageType = '';
 $category = null;
 
-// Get category data
+
 if ($categoryId) {
     $category = Category::getCategoryById($categoryId);
 }
 
-// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
     $newName = trim($_POST['nom']);
     if (!empty($newName) && isset($_POST['id'])) {

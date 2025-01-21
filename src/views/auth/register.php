@@ -48,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="h-full flex items-center justify-center bg-gray-50">
     <div class="max-w-md w-full mx-auto p-6 bg-white rounded-lg shadow-md animate-fade-in">
-        <!-- Logo -->
         <div class="flex justify-center mb-6">
             <div class="bg-indigo-600 p-2 rounded-lg">
                 <i class="fas fa-graduation-cap text-white text-3xl"></i>
@@ -64,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
         </p>
 
-        <!-- Error Message -->
         <?php if (!empty($error)): ?>
             <div class="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded relative" role="alert">
                 <span class="block sm:inline"><?php echo htmlspecialchars($error); ?></span>
@@ -72,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form class="space-y-6" action="register.php" method="POST">
-            <!-- Name -->
             <div>
                 <label for="nom" class="block text-sm font-medium text-gray-700">
                     Name
@@ -83,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Email -->
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">
                     Email address
@@ -94,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Password -->
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">
                     Password
@@ -108,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Role -->
             <div>
                 <label for="role" class="block text-sm font-medium text-gray-700">
                     Role
@@ -122,7 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <div>
                 <button type="submit"
                         class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -148,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Add client-side validation
         document.querySelector('form').addEventListener('submit', function(e) {
             const nom = document.getElementById('nom').value;
             const email = document.getElementById('email').value;

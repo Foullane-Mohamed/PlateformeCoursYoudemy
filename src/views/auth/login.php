@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
 
 </a>
-        <!-- Logo -->
+  
         <div class="flex flex-col items-center">
             <div class="bg-indigo-600 p-4 rounded-full mb-4 shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-4xl"></i>
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </p>
         </div>
 
-        <!-- Error Message -->
+      
         <?php if (!empty($error)): ?>
             <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg" role="alert">
                 <p class="text-red-700"><?php echo htmlspecialchars($error); ?></p>
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form class="space-y-6" action="login.php" method="POST" id="loginForm">
-            <!-- Email Input -->
+          
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                     Email address
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Password Input -->
+        
             <div>
                 <div class="flex justify-between items-center mb-2">
                     <label for="password" class="block text-sm font-medium text-gray-700">
@@ -152,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <div>
                 <button
                     type="submit"
@@ -162,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
 
-            <!-- Register Link -->
             <div class="text-center">
                 <p class="text-sm text-gray-600">
                     Don't have an account?

@@ -5,25 +5,21 @@ require_once __DIR__ . '/models/Course.php';
 // Initialize Course model
 $courseModel = new Course();
 
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+// Handle search
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Pagination
 $coursesPerPage = 6;
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($currentPage - 1) * $coursesPerPage;
 
-// Récupérer le nombre total de cours correspondant à la recherche
-$totalCourses = $courseModel->getTotalCourses($search);
+// Get courses with search and pagination
+$courses = $courseModel->getAllCoursesWithDetails( $search);
+$totalCourses = count($courses);
 $totalPages = ceil($totalCourses / $coursesPerPage);
 
-// Récupérer les cours pour la page actuelle
-$courses = $courseModel->getAllCoursesWithDetails(null, $search, $coursesPerPage, $offset);
-
-
-
-
-
-
-
-
+// Slice the courses array for current page
+$currentCourses = array_slice($courses, $offset, $coursesPerPage);
 ?>
 
 <!DOCTYPE html>
@@ -78,13 +74,13 @@ $courses = $courseModel->getAllCoursesWithDetails(null, $search, $coursesPerPage
 
         <!-- Course Grid -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <?php if (empty($courses)): ?>
+            <?php if (empty($currentCourses)): ?>
                 <div class="text-center py-8">
                     <p class="text-gray-500 text-lg">No courses found.</p>
                 </div>
             <?php else: ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <?php foreach ($courses as $course): ?>
+                    <?php foreach ($currentCourses as $course): ?>
                         <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
                             <div class="p-6">
                                 <h3 class="text-lg font-semibold mb-2"><?php echo htmlspecialchars($course['titre']); ?></h3>
@@ -105,15 +101,15 @@ $courses = $courseModel->getAllCoursesWithDetails(null, $search, $coursesPerPage
 
                 <!-- Pagination -->
                 <?php if ($totalPages > 1): ?>
-                    <div class="flex justify-center space-x-2 mt-8">
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a href="?page=<?php echo $i; ?><?php echo $search ? '&search=' . urlencode($search) : ''; ?>" 
-                               class="px-4 py-2 rounded <?php echo $currentPage === $i ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'; ?>">
-                                <?php echo $i; ?>
-                            </a>
-                        <?php endfor; ?>
-                    </div>
-                <?php endif; ?>
+    <div class="flex justify-center space-x-2 mt-8">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?page=<?php echo $i; ?><?php echo $search ? '&search=' . urlencode($search) : ''; ?>" 
+               class="px-4 py-2 rounded <?php echo $currentPage === $i ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'; ?>">
+                <?php echo $i; ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+<?php endif; ?>
             <?php endif; ?>
         </div>
     </div>

@@ -13,7 +13,7 @@
 </head>
 <body class="h-full">
     <div class="min-h-screen bg-gray-50 flex">
-        <!-- Sidebar (reused from your original code) -->
+      
         <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200">
             <!-- Logo -->
             <div class="flex items-center h-16 px-6 border-b border-gray-200 bg-white">

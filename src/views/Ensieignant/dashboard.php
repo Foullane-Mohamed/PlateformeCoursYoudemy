@@ -11,10 +11,10 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'enseignant') {
 $enseignant = new Enseignant($_SESSION['user']['id']);
 $enseignantId = $_SESSION['user']['id'];
 
-// Fetch statistics
+
 $totalStudents = $enseignant->getTotalStudents();
 $activeCourses = $enseignant->getActiveCourses();
-$enAttenteCourses = $enseignant->getEnAttenteCourses(); // Fetch pending courses
+$enAttenteCourses = $enseignant->getEnAttenteCourses();
 $draftCourses = $enseignant->getDraftCourses();
 $coursePerformance = $enseignant->getCoursePerformance();
 ?>
@@ -42,9 +42,7 @@ $coursePerformance = $enseignant->getCoursePerformance();
 </head>
 <body class="h-full">
     <div class="min-h-screen bg-gray-50 flex">
-        <!-- Sidebar -->
         <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200">
-            <!-- Logo -->
             <div class="flex items-center h-16 px-6 border-b border-gray-200 bg-white">
                 <div class="flex items-center gap-2">
                     <div class="bg-indigo-600 p-2 rounded-lg">
@@ -54,7 +52,6 @@ $coursePerformance = $enseignant->getCoursePerformance();
                 </div>
             </div>
 
-            <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
                 <div>
                     <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Main</h3>
@@ -83,9 +80,7 @@ $coursePerformance = $enseignant->getCoursePerformance();
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <div class="lg:pl-72 flex flex-col flex-1">
-            <!-- Top Navigation -->
             <header class="sticky top-0 z-10 bg-white border-b border-gray-200">
                 <div class="px-4 sm:px-6 lg:px-8 py-4">
                     <div class="flex items-center justify-between">
@@ -105,17 +100,13 @@ $coursePerformance = $enseignant->getCoursePerformance();
                 </div>
             </header>
 
-            <!-- Page Content -->
             <main class="flex-1 p-6">
-                <!-- Welcome Section -->
                 <div class="mb-8">
                     <h1 class="text-2xl font-bold text-gray-900">Teacher Dashboard</h1>
                     <p class="mt-2 text-sm text-gray-600">Monitor your courses and student engagement.</p>
                 </div>
 
-                <!-- Stats Grid -->
                 <div class="stats-grid mb-8">
-                    <!-- Total Students -->
                     <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center justify-center w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg">
@@ -127,7 +118,6 @@ $coursePerformance = $enseignant->getCoursePerformance();
                         <p class="text-sm text-gray-500 mt-2">+56 this month</p>
                     </div>
 
-                    <!-- Active Courses -->
                     <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-lg">
@@ -139,7 +129,6 @@ $coursePerformance = $enseignant->getCoursePerformance();
                         <p class="text-sm text-gray-500 mt-2"><?php echo $draftCourses; ?> in draft</p>
                     </div>
 
-                    <!-- Pending Courses -->
                     <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">

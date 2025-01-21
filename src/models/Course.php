@@ -70,8 +70,8 @@ class Course
             LEFT JOIN cours_tags ct ON c.id = ct.id_cours
             LEFT JOIN tags t ON ct.id_tag = t.id_tag
             WHERE c.id = :course_id
-            GROUP BY c.id
-            WHERE c.status = 'actif'";
+            GROUP BY c.id 
+             WHERE c.status = 'actif'";
         
     
         $stmt = $conn->prepare($query);
@@ -80,6 +80,42 @@ class Course
     
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function getCourseEtudiantDeatails($courseId)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+    
+        $query = "
+            SELECT 
+                c.*,
+                cat.nom as category_name,
+                u.nom as enseignant_nom,
+                COUNT(DISTINCT i.id_etudiant) as nombre_etudiants,
+                GROUP_CONCAT(DISTINCT t.nom) as tags
+            FROM cours c
+            LEFT JOIN categories cat ON c.id_categorie = cat.id_categorie
+            LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
+            LEFT JOIN inscriptions i ON c.id = i.id_cours
+            LEFT JOIN cours_tags ct ON c.id = ct.id_cours
+            LEFT JOIN tags t ON ct.id_tag = t.id_tag
+            WHERE c.id = :course_id
+            GROUP BY c.id ";
+            // WHERE c.status = 'actif'";
+        
+    
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':course_id', $courseId);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function getPaginatedCoursesWithDetails($categoryId = null, $search = null, $limit = 10, $offset = 0) {
+  
+      $allCourses = $this->getAllCoursesWithDetails($categoryId, $search);
+  
+      
+      return array_slice($allCourses, $offset, $limit);
+  }
     public function getCourseAllStatus($courseId)
     {
         $db = Database::getInstance();
@@ -273,29 +309,29 @@ public function getAllCoursesWithDetails($categoryId = null, $search = null)
     
         $params = [];
     
-        // Si une recherche est spécifiée, on ajoute une condition pour filtrer les résultats
+    
         if ($search) {
             $query .= " AND (c.titre LIKE :search OR c.description LIKE :search OR t.nom LIKE :search)";
             $params[':search'] = "%$search%";
         }
     
-        // Préparation de la requête
+      
         $stmt = $conn->prepare($query);
     
-        // Liaison des paramètres
+      
         if (!empty($params)) {
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
         }
     
-        // Exécution de la requête
+    
         $stmt->execute();
     
-        // Récupération du résultat
+      
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
-        // Retourne le nombre total de cours (ou 0 si aucun cours n'est trouvé)
+    
         return $result['total'] ?? 0;
     }
 

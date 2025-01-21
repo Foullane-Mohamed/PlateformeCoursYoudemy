@@ -15,7 +15,6 @@ class Admin extends User
             $db = Database::getInstance();
             $conn = $db->getConnection();
 
-            // First check if the user exists and is a teacher
             $checkStmt = $conn->prepare("SELECT role, status FROM utilisateurs WHERE id = :userId");
             $checkStmt->bindParam(':userId', $userId);
             $checkStmt->execute();
@@ -45,7 +44,6 @@ class Admin extends User
             $db = Database::getInstance();
             $conn = $db->getConnection();
 
-            // Check if user exists before suspending
             $checkStmt = $conn->prepare("SELECT id, status FROM utilisateurs WHERE id = :userId");
             $checkStmt->bindParam(':userId', $userId);
             $checkStmt->execute();
@@ -58,7 +56,6 @@ class Admin extends User
             $stmt->bindParam(':userId', $userId);
             $stmt->execute();
 
-            // Additional cleanup for inactive teachers
             $this->handleInactiveTeacher($userId);
 
             return ['success' => true, 'message' => 'Utilisateur suspendu avec succès'];
@@ -73,7 +70,6 @@ class Admin extends User
             $db = Database::getInstance();
             $conn = $db->getConnection();
 
-            // Optional: Notify enrolled students
             $stmt = $conn->prepare("
                 SELECT DISTINCT u.email
                 FROM utilisateurs u
@@ -85,7 +81,6 @@ class Admin extends User
             $stmt->execute();
             $studentEmails = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-            // Optional: Update course status or take other actions
             $stmt = $conn->prepare("
                 UPDATE cours
                 SET status = 'suspendu'
@@ -96,7 +91,6 @@ class Admin extends User
 
             return true;
         } catch (PDOException $e) {
-            // Log error but don't stop the main suspension process
             error_log('Error handling inactive teacher: ' . $e->getMessage());
             return false;
         }
@@ -108,10 +102,8 @@ class Admin extends User
             $db = Database::getInstance();
             $conn = $db->getConnection();
 
-            // Start transaction
             $conn->beginTransaction();
 
-            // Check if user exists and get their role
             $checkStmt = $conn->prepare("SELECT role FROM utilisateurs WHERE id = :userId");
             $checkStmt->bindParam(':userId', $userId);
             $checkStmt->execute();
@@ -121,15 +113,12 @@ class Admin extends User
                 return ['success' => false, 'message' => 'Utilisateur non trouvé'];
             }
 
-            // If teacher, handle their courses first
             if ($user['role'] === 'enseignant') {
-                // Either reassign or delete courses
                 $stmt = $conn->prepare("UPDATE cours SET status = 'supprimé' WHERE id_enseignant = :userId");
                 $stmt->bindParam(':userId', $userId);
                 $stmt->execute();
             }
 
-            // Delete user's records from related tables
             $tables = ['inscriptions', 'evaluations', 'commentaires'];
             foreach ($tables as $table) {
                 $stmt = $conn->prepare("DELETE FROM {$table} WHERE id_utilisateur = :userId");
@@ -137,7 +126,6 @@ class Admin extends User
                 $stmt->execute();
             }
 
-            // Finally delete the user
             $stmt = $conn->prepare("DELETE FROM utilisateurs WHERE id = :userId");
             $stmt->bindParam(':userId', $userId);
             $stmt->execute();
@@ -156,7 +144,6 @@ class Admin extends User
             $db = Database::getInstance();
             $conn = $db->getConnection();
 
-            // Exclude inactive teachers from the general listing
             $stmt = $conn->prepare("
                 SELECT * FROM utilisateurs
                 WHERE NOT (role = 'enseignant' AND status = 'inactif')

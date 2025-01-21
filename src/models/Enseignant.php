@@ -124,7 +124,6 @@ class Enseignant extends User
             
             $conn->beginTransaction();
 
-            // Update course details
             $stmt = $conn->prepare("UPDATE cours 
                                   SET titre = :titre, 
                                       description = :description, 
@@ -144,7 +143,7 @@ class Enseignant extends User
                 ':id_enseignant' => $this->id
             ]);
 
-            // Update tags
+      
             $this->supprimerTagsDeCours($idCours);
             foreach ($tags as $tagName) {
                 $tag = new Tag($tagName);
@@ -187,7 +186,6 @@ class Enseignant extends User
 
             $conn->beginTransaction();
 
-            // Verify course belongs to teacher
             $stmt = $conn->prepare("SELECT id FROM cours 
                                   WHERE id = :id 
                                   AND id_enseignant = :id_enseignant");
@@ -200,7 +198,6 @@ class Enseignant extends User
                 throw new Exception('Cours non trouvé ou non autorisé');
             }
 
-            // Delete related records
             $this->supprimerTagsDeCours($idCours);
             
             $stmt = $conn->prepare("DELETE FROM inscriptions 
@@ -321,7 +318,6 @@ public function getCourseTags($courseId)
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        // En cas d'erreur, retourner un tableau vide
         error_log('Error fetching course tags: ' . $e->getMessage());
         return [];
     }
@@ -359,14 +355,11 @@ public function ajouterCours($titre, $description, $contenu, $type_contenu, $id_
         $db = Database::getInstance();
         $conn = $db->getConnection();
         
-        // Begin transaction
         $conn->beginTransaction();
 
-        // Create the course with status 'en_attente'
         $cours = new Course($titre, $description, $contenu, $type_contenu, $id_categorie, $this->id, 'en_attente');
         $coursId = $cours->create();
 
-        // Add tags
         if (!empty($tags)) {
             foreach ($tags as $tagName) {
                 $tag = new Tag($tagName);
