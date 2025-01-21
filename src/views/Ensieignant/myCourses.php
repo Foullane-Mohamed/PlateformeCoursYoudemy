@@ -54,10 +54,7 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
                             <i class="fas fa-book w-5 h-5"></i>
                             <span class="ml-3">My Courses</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-users w-5 h-5"></i>
-                            <span class="ml-3">Students</span>
-                        </a>
+                      
                     </div>
                 </div>
 
@@ -75,9 +72,9 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
             <!-- Profile Section -->
             <div class="border-t border-gray-200 p-4">
                 <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50">
-                    <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Teacher" class="w-8 h-8 rounded-lg">
+          
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 truncate">John Doe</p>
+                    
                         <p class="text-xs text-gray-500 truncate">Web Development</p>
                     </div>
                     <button class="text-gray-400 hover:text-gray-500">
@@ -111,10 +108,6 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
                                 <span class="hidden sm:block font-medium text-sm text-gray-700">Logout</span>
                             </a>
 
-                            <button class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50">
-                                <img src="https://ui-avatars.com/api/?name=John+Doe" alt="Teacher" class="w-8 h-8 rounded-lg">
-                                <span class="hidden sm:block font-medium text-sm text-gray-700">John Doe</span>
-                            </button>
                         </div>
                     </div>
                 </div>

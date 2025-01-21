@@ -64,7 +64,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body class="h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+  
     <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-2xl animate-fade-in">
+  
+                <a href="../../index.php">
+                <button
+                    type="submit"
+                    class="px-4 py-2 border-2 border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white focus:ring-2 focus:ring-blue-300 focus:outline-none transition-colors  "
+                >
+                    Home Page
+                </button>
+
+</a>
         <!-- Logo -->
         <div class="flex flex-col items-center">
             <div class="bg-indigo-600 p-4 rounded-full mb-4 shadow-lg">
@@ -161,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </p>
             </div>
         </form>
+    
     </div>
 
     <script>

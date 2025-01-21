@@ -67,10 +67,7 @@ $coursePerformance = $enseignant->getCoursePerformance();
                             <i class="fas fa-book w-5 h-5"></i>
                             <span class="ml-3">My Courses</span>
                         </a>
-                        <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-50">
-                            <i class="fas fa-users w-5 h-5"></i>
-                            <span class="ml-3">Students</span>
-                        </a>
+                      
                     </div>
                 </div>
 

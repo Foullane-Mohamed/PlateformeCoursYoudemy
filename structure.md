@@ -29,8 +29,12 @@ youdemy/
 │   │   │   └── tags.php
 │   │   │   
 │   │   ├── ensieignant/
-│   │   │   ├── ajouterCours.php
+│   │   │   ├─ ajouterCours.php
 │   │   │   ├── dashboard.php
+│   │   │   ├── delete_course.php
+│   │   │   ├── edit_course.php
+│   │   │   ├── edit_course.php
+│   │   │   ├── view_course.php
 │   │   │   └── myCourses.php
 │   │   └── etudiant/
 │   │       ├── dashboard.php

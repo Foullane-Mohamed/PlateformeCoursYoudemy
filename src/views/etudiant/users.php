@@ -13,7 +13,7 @@ $user = User::findById($_SESSION['user']['id']);
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr">z
 <head>
     <meta charset="UTF-8">
     <title>Profil - Youdemy</title>

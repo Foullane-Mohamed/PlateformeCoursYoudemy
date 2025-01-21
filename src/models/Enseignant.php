@@ -19,7 +19,7 @@ class Enseignant extends User
         return $this->id;
     }
 
-    // إضافة دالة للحصول على قائمة الدورات الخاصة بالمدرس
+
     public function getMyCourses()
     {
         $db = Database::getInstance();
@@ -223,7 +223,7 @@ class Enseignant extends User
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
-// إضافة هذه الدوال في فئة Enseignant
+
 
 public function getCourseById($courseId)
 {

@@ -14,7 +14,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 $message = '';
 $messageType = '';
 
-// Handle category form submissions
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   switch ($_POST['action']) {
     case 'create':
@@ -110,11 +110,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   </style>
 <body class="h-full">
   <div class="min-h-full">
-    <!-- Navigation -->
+
     <nav class="bg-white border-b border-gray-200 fixed w-full z-30 top-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-          <!-- Logo et liens de navigation -->
+
           <div class="flex">
           
             <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -126,11 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             </div>
           </div>
 
-          <!-- Section droite avec recherche, notifications et profil -->
           <div class="hidden sm:ml-6 sm:flex sm:items-center">
     
 
-            <!-- Menu profil -->
+
             <div class="ml-3 relative">
               <div class="flex items-center">
                 <button type="button" class="bg-white flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 items-center" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleProfileDropdown()">
@@ -146,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                       Déconnexion
                   </a>
               </div>
-              <!-- Menu déroulant du profil -->
+
               <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu">
                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                   <i class="fas fa-user mr-2"></i>
@@ -165,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             </div>
           </div>
 
-          <!-- Bouton menu mobile -->
           <div class="flex items-center sm:hidden">
             <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMobileMenu()">
               <span class="sr-only">Open main menu</span>
@@ -175,7 +173,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         </div>
       </div>
 
-      <!-- Menu mobile -->
       <div class="sm:hidden hidden" id="mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
           <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
@@ -226,9 +223,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   
   
 
-    <!-- Contenu principal -->
+
     <main class="max-w-7xl mt-12 mx-auto py-6 sm:px-6 lg:px-8">
-      <!-- Alert Message -->
+
       <?php if ($message): ?>
         <div class="mb-4 rounded-md p-4 <?php echo $messageType === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'; ?>">
           <?php echo htmlspecialchars($message); ?>
@@ -238,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
   
 
-      <!-- Section des validations en attente -->
+
       <div class="mt-8">
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:px-6 flex justify-between items-center">

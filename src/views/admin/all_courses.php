@@ -41,6 +41,7 @@ try {
   // Fetch all courses
   $courseModel = new Course(null, null, null, null, null, null, null);
   $allCourses = $courseModel->getAllCoursesWithDetails();
+
 } catch (Exception $e) {
   die("Erreur: " . $e->getMessage());
 }
