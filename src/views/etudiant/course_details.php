@@ -3,36 +3,31 @@ session_start();
 require_once __DIR__ . '/../../models/Course.php';
 require_once __DIR__ . '/../../models/Etudiant.php';
 
-// Vérification authentification
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'etudiant') {
     header('Location: ../auth/login.php');
     exit();
 }
 
-// Validation ID cours
 $courseId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$courseId) {
     header('Location: allCourses.php');
     exit();
 }
 
-// Récupération données
 $courseModel = new Course();
-$course = $courseModel->getCourseEtudiantDeatails($courseId);
 
-// Création de l'objet Etudiant avec les données de l'utilisateur
+
 $user = $_SESSION['user'];
 $etudiant = new Etudiant($user['nom'], $user['email'], $user['password'], $user['role'], $user['status']);
-
+$course = $etudiant->getCourseAllStatus($courseId);
 $isEnrolled = $courseModel->isEnrolled($_SESSION['user']['id'], $courseId);
 
-// Gestion inscription
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isEnrolled) {
     $result = $etudiant->inscriptionCours($_SESSION['user']['id'], $courseId);
     
     if ($result['success']) {
         $_SESSION['success'] = $result['message'];
-        header('Refresh:0'); // Recharger la page
+        header('Refresh:0'); 
         exit();
     } else {
         $_SESSION['error'] = $result['message'];

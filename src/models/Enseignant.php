@@ -4,8 +4,9 @@ require_once __DIR__ . '/Category.php';
 require_once __DIR__ . '/User.php';
 require_once __DIR__ . '/Course.php';
 require_once __DIR__ . '/Tag.php';
+require_once __DIR__ . '/GetCourses.php';
 
-class Enseignant extends User
+class Enseignant extends User implements GetCourses
 {
     protected $id;
 
@@ -19,7 +20,33 @@ class Enseignant extends User
         return $this->id;
     }
 
-
+    public function getCourseAllStatus($courseId)
+    {
+        $db = Database::getInstance();
+        $conn = $db->getConnection();
+    
+        $query = "
+            SELECT 
+                c.*,
+                cat.nom as category_name,
+                u.nom as enseignant_nom,
+                COUNT(DISTINCT i.id_etudiant) as nombre_etudiants,
+                GROUP_CONCAT(DISTINCT t.nom) as tags
+            FROM cours c
+            LEFT JOIN categories cat ON c.id_categorie = cat.id_categorie
+            LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
+            LEFT JOIN inscriptions i ON c.id = i.id_cours
+            LEFT JOIN cours_tags ct ON c.id = ct.id_cours
+            LEFT JOIN tags t ON ct.id_tag = t.id_tag
+            WHERE c.id = :course_id
+            GROUP BY c.id";
+    
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':course_id', $courseId);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     public function getMyCourses()
     {
         $db = Database::getInstance();
@@ -308,7 +335,7 @@ public function getCourseTags($courseId)
         $conn = $db->getConnection();
 
         $stmt = $conn->prepare("
-            SELECT t.id_tag, t.nom
+            SELECT t.id_tag, t.nom AS nom
             FROM tags t
             JOIN cours_tags ct ON t.id_tag = ct.id_tag
             WHERE ct.id_cours = :id_cours

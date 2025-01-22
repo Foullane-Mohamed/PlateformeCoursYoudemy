@@ -3,31 +3,26 @@ session_start();
 require_once __DIR__ . '/../../models/Course.php';
 require_once __DIR__ . '/../../models/Enseignant.php';
 
-// Vérification de l'authentification
 if (!isset($_SESSION['user'])) {
     header('Location: ../auth/login.php');
     exit();
 }
 
-// Récupérer l'ID du cours
 $courseId = $_GET['id'] ?? null;
 if (!$courseId) {
     header('Location: myCourses.php');
     exit();
 }
 
-// Initialiser les modèles
 $enseignant = new Enseignant($_SESSION['user']['id']);
 $courseModel = new Course(null, null, null, null, null, null, null);
 
-// Récupérer les détails du cours
-$course = $courseModel->getCourseAllStatus($courseId);
+$course = $enseignant->getCourseAllStatus($courseId);
 if (!$course) {
     header('Location: myCourses.php');
     exit();
 }
 
-// Récupérer les tags du cours
 $courseTags = $enseignant->getCourseTags($courseId);
 ?>
 
@@ -174,7 +169,7 @@ $courseTags = $enseignant->getCourseTags($courseId);
                     <div class="flex flex-wrap gap-2 mt-2">
                         <?php foreach ($courseTags as $tag): ?>
                             <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">
-                                <?php echo htmlspecialchars($tag['nom']); ?>
+                                <?php echo htmlspecialchars($tag['nomTag']); ?>
                             </span>
                         <?php endforeach; ?>
                     </div>

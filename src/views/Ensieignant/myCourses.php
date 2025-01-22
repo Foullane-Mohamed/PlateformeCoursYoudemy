@@ -134,8 +134,8 @@ $courses = $enseignant->getMesCours(); // Fetch courses created by the teacher
                                     <span class="text-sm text-gray-500">Tags:</span>
                                     <div class="flex space-x-2 ml-2">
                                         <?php
-                                        // Fetch tags for the course
                                         $courseTags = $enseignant->getCourseTags($course['id']);
+                                        // Fetch tags for the course
                                         foreach ($courseTags as $tag): ?>
                                             <span class="bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">
                                                 <?php echo htmlspecialchars($tag['nom']); ?>

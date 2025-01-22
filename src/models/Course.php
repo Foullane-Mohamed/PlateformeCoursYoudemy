@@ -116,33 +116,7 @@ class Course
       
       return array_slice($allCourses, $offset, $limit);
   }
-    public function getCourseAllStatus($courseId)
-    {
-        $db = Database::getInstance();
-        $conn = $db->getConnection();
-    
-        $query = "
-            SELECT 
-                c.*,
-                cat.nom as category_name,
-                u.nom as enseignant_nom,
-                COUNT(DISTINCT i.id_etudiant) as nombre_etudiants,
-                GROUP_CONCAT(DISTINCT t.nom) as tags
-            FROM cours c
-            LEFT JOIN categories cat ON c.id_categorie = cat.id_categorie
-            LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
-            LEFT JOIN inscriptions i ON c.id = i.id_cours
-            LEFT JOIN cours_tags ct ON c.id = ct.id_cours
-            LEFT JOIN tags t ON ct.id_tag = t.id_tag
-            WHERE c.id = :course_id
-            GROUP BY c.id";
-    
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':course_id', $courseId);
-        $stmt->execute();
-    
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+
 
     public function isEnrolled($userId, $courseId)
     {
@@ -290,49 +264,6 @@ public function getAllCoursesWithDetails($categoryId = null, $search = null)
         } catch (PDOException $e) {
             throw new Exception('Erreur lors de la mise à jour du statut du cours: ' . $e->getMessage());
         }
-    }
-    public function getTotalCourses($search = null)
-    {
-        $db = Database::getInstance();
-        $conn = $db->getConnection();
-    
-        // Requête de base pour compter le nombre total de cours actifs
-        $query = "
-            SELECT COUNT(DISTINCT c.id) as total
-            FROM cours c
-            LEFT JOIN categories cat ON c.id_categorie = cat.id_categorie
-            LEFT JOIN utilisateurs u ON c.id_enseignant = u.id
-            LEFT JOIN inscriptions i ON c.id = i.id_cours
-            LEFT JOIN cours_tags ct ON c.id = ct.id_cours
-            LEFT JOIN tags t ON ct.id_tag = t.id_tag
-            WHERE c.statut = 'actif'";
-    
-        $params = [];
-    
-    
-        if ($search) {
-            $query .= " AND (c.titre LIKE :search OR c.description LIKE :search OR t.nom LIKE :search)";
-            $params[':search'] = "%$search%";
-        }
-    
-      
-        $stmt = $conn->prepare($query);
-    
-      
-        if (!empty($params)) {
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-        }
-    
-    
-        $stmt->execute();
-    
-      
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    
-        return $result['total'] ?? 0;
     }
 
     public function getCoursesByStatus($status)

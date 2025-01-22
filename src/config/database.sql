@@ -10,11 +10,23 @@ CREATE TABLE utilisateurs (
     role ENUM('admin', 'enseignant', 'etudiant') NOT NULL,
     status ENUM('actif', 'inactif', 'en_attente') NOT NULL DEFAULT 'en_attente'
 );
+SELECT * FROM cours ;
+
+
+
+
+
+
+
+
+
+
 
 CREATE TABLE categories (
     id_categorie INT PRIMARY KEY AUTO_INCREMENT,
     nom VARCHAR(100) NOT NULL UNIQUE
 );
+
 
 CREATE TABLE tags (
     id_tag INT PRIMARY KEY AUTO_INCREMENT,
@@ -33,6 +45,8 @@ CREATE TABLE cours (
     FOREIGN KEY (id_categorie) REFERENCES categories(id_categorie) ON DELETE SET NULL,
     FOREIGN KEY (id_enseignant) REFERENCES utilisateurs(id) ON DELETE CASCADE
 );
+
+
 SELECT * FROM cours
 WHERE id_enseignant = 29 AND statut = 'inactif';
 SELECT * FROM cours;
@@ -66,5 +80,4 @@ VALUES (
     'admin', 
     'actif'
 );
-
 

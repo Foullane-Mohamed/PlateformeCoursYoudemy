@@ -12,17 +12,15 @@ $search = filter_input(INPUT_GET, 'search', FILTER_DEFAULT);
 $categoryId = filter_input(INPUT_GET, 'category_id', FILTER_VALIDATE_INT);
 
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, ['options' => ['default' => 1, 'min_range' => 1]]);
-$limit = 6; // عدد العناصر في كل صفحة
+$limit = 6;
 $offset = ($page - 1) * $limit;
 
 $courseModel = new Course();
 $courses = $courseModel->getPaginatedCoursesWithDetails($categoryId, $search, $limit, $offset);
 
-// حساب عدد الصفحات
 $allCourses = $courseModel->getAllCoursesWithDetails($categoryId, $search); // استدعاء الوظيفة الأصلية
-$totalCourses = count($allCourses); // عدد الكورسات الكلي
-$totalPages = ceil($totalCourses / $limit); // عدد الصفحات
-
+$totalCourses = count($allCourses); 
+$totalPages = ceil($totalCourses / $limit); 
 $categories = $courseModel->getAllCategories();
 ?>
 
